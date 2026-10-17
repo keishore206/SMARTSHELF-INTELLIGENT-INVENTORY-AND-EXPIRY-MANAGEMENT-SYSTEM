@@ -1,0 +1,219 @@
+DESIGN SYSTEM (REQUIRED):
+- Platform: Desktop Web SaaS (1440px canvas)
+- Typography: Inter (sans-serif), font weights 400, 500, 600, 700. Monospace numbers in tables.
+- Aesthetic: Modern Enterprise B2B SaaS, subtle 1px slate borders, high-density data, zero emojis.
+- Iconography: Monoline SVG line icons only (Lucide/Heroicons style, 16–20px). No emojis.
+- Palette:
+  * Primary Sidebar: Deep Navy Slate (#0f172a) with Slate-800 borders (#1e293b)
+  * Main Canvas: Subtle Slate Gray (#f8fafc)
+  * Surface Cards: Pure White (#ffffff) with 1px border (#e2e8f0) and soft shadow
+  * Brand Accent: Cobalt Royal Blue (#1d4ed8)
+  * Status Badges:
+    - Normal / In Stock / Good: Emerald Green (#16a34a, bg #dcfce7)
+    - Warning / Low Stock / Expiring Soon: Amber (#d97706, bg #fef3c7)
+    - Danger / Expired / Out of Stock: Crimson Red (#dc2626, bg #fee2e2)
+    - Neutral / Meta: Slate (#475569, bg #f1f5f9)
+Screen 1: Executive Inventory Dashboard
+A high-density executive dashboard for SmartShelf, a commercial inventory and shelf-life tracking platform. Desktop web application, 1440px width, clean Inter typography, zero emojis.
+
+DESIGN SYSTEM (REQUIRED):
+- Platform: Desktop Web SaaS
+- Theme: Dark slate sidebar (#0f172a), light gray content background (#f8fafc), white surface cards (#ffffff)
+- Primary Accent: Cobalt Blue (#1d4ed8)
+- Text: Slate-900 (#0f172a) for titles, Slate-600 (#475569) for descriptions
+- Icons: Monoline vector line icons only (box, warning-triangle, clock, chart, layers). No emojis.
+
+Page Structure:
+1. Navigation Sidebar (Left, 260px width, background #0f172a):
+   - Header: "SmartShelf" logo title in white Inter 700 with subtitle "Inventory Platform" in slate-400.
+   - Section "Overview": "Dashboard" (active state with dark blue highlight #1e3a5f and white text).
+   - Section "Inventory": "Inventory Catalog", "Add Product", "Edit Product", "Delete Product".
+   - Section "Monitoring": "Alerts & Exceptions", "Reports & Export".
+   - Section "System": "System Audit Log".
+   - Footer: System date stamp and version tag "v1.2.0 Enterprise".
+
+2. Top Header Bar:
+   - Page Title: "Inventory Dashboard" with subtitle "Executive overview and real-time operational health".
+   - Right Side Actions: "Quick Export" button and "+ Register Product" primary blue button.
+
+3. KPI Metric Strip (5 equal cards in a horizontal row):
+   - Card 1: "Catalog SKUs" -> Value "1,248" with "+12 this week" indicator.
+   - Card 2: "Total Units" -> Value "38,420" units.
+   - Card 3: "Stock Valuation" -> Value "Rs 4,829,350.00" with gross margin tag.
+   - Card 4: "Expired Batches" -> Value "3" with red danger alert badge.
+   - Card 5: "Low Stock Items" -> Value "14" with amber warning badge.
+
+4. Operational Alert Banners:
+   - High-priority banner in light red tint: "Critical Notice: 3 catalog batches have exceeded expiration dates. Immediate write-off required."
+   - Secondary banner in amber tint: "Inventory Notice: 14 SKUs have fallen below minimum safety threshold."
+
+5. Analytics Row (2 columns, 50/50 split):
+   - Left Card: "Units by Category" bar chart showing volume distribution across Dairy, Beverages, Bakery, Produce, Packaged Goods.
+   - Right Card: "Stock Health Breakdown" horizontal progress/bar chart showing In Stock (86%), Low Stock (11%), Out of Stock (3%).
+
+6. Upcoming Expiration Timeline (Full width card):
+   - Card title: "Upcoming Shelf Expirations (Next 30 Days)" with view all link.
+   - Clean data table with columns: Product SKU, Product Name, Category, Units On Hand, Unit Price (Rs), Expiry Date, Days Remaining (pill badge), Status.
+
+Screen 2: Inventory Catalog & Product Inspector
+A comprehensive data catalog and item inspector interface for the SmartShelf inventory platform. Desktop web application, 1440px, Inter font, clean monochrome/slate aesthetic, zero emojis.
+
+DESIGN SYSTEM (REQUIRED):
+- Platform: Desktop Web SaaS
+- Layout: 260px dark sidebar (#0f172a) on left, main content on #f8fafc
+- Typography: Inter with monospace numbers in data tables
+- Surfaces: White (#ffffff) cards with subtle #e2e8f0 borders
+
+Page Structure:
+1. Sidebar: "SmartShelf" navigation with "Inventory Catalog" highlighted as active.
+2. Page Header:
+   - Title: "Inventory Catalog"
+   - Subtitle: "Search, filter, and inspect detailed inventory attributes and shelf-life metrics."
+   - Header actions: "Export CSV" secondary button and "Add New SKU" primary button (#1d4ed8).
+
+3. Search & Multi-Filter Control Bar (Single horizontal bar with 4 input segments):
+   - Search Field: Wide search input with magnifying glass line icon and placeholder "Search by product name, SKU, or batch..."
+   - Category Dropdown: "All Categories", "Dairy", "Beverages", "Produce", "Bakery", "Dry Goods".
+   - Stock Level Dropdown: "All Stock Levels", "In Stock", "Low Stock", "Out of Stock".
+   - Expiration Status Dropdown: "All Lifecycles", "Good (OK)", "Expiring Soon", "Expired", "Non-Perishable".
+   - Sort Control: Dropdown with "Name (A-Z)", "Quantity (High to Low)", "Valuation (High to Low)", "Expiry (Earliest)".
+
+4. Inventory Data Table (High-density, interactive table):
+   - Meta bar: "Displaying 48 of 1,248 total catalog items" with bulk selection checkboxes.
+   - Column Headers: Checkbox, SKU ID, Product Name, Category, Stock Units, Unit Price, Batch Valuation, Expiration Date, Days Remaining, Stock Status, Actions.
+   - Status representations:
+     * In Stock: Soft green pill badge with dark green text "In Stock"
+     * Low Stock: Soft amber pill badge with dark amber text "Low Stock"
+     * Expired: Soft red pill badge with dark red text "Expired"
+   - Row interaction: Hover highlight with subtle gray tint.
+
+5. Slide-Out or Split Item Specification Inspector (Right panel or bottom card):
+   - Title: "Item Specification Inspector - SKU #1042: Whole Milk 1L"
+   - 2-column detail grid:
+     * Internal ID: #1042
+     * Category Classification: Dairy & Refrigerated
+     * Stock Volume: 42 units (Safe Minimum Threshold: 15 units)
+     * Unit Cost & Batch Valuation: Rs 32.00 / Rs 1,344.00 total
+     * Shelf-Life Lifecycle: Expiring Soon (3 days remaining - 2026-10-18)
+     * Timestamps: Created 2026-09-01 10:14 | Last Stock Audit: 2026-10-14 18:30
+   - Action buttons: "Edit Specifications", "Adjust Stock Count", "Decommission SKU".
+
+Screen 3: Register New Product Form
+A professional product registration screen for the SmartShelf inventory platform featuring a structured two-column layout: an input form on the left and a live real-time preview card on the right. Desktop web application, Inter font, zero emojis.
+
+DESIGN SYSTEM (REQUIRED):
+- Platform: Desktop Web SaaS
+- Colors: White (#ffffff) form panels, slate borders (#e2e8f0), cobalt primary button (#1d4ed8)
+- Typography: Inter, 500-weight field labels, crisp validation states
+
+Page Structure:
+1. Sidebar: "SmartShelf" navigation with "Add Product" highlighted as active.
+2. Page Header:
+   - Title: "Register New Product"
+   - Subtitle: "Enter product metadata, stock counts, valuation, and shelf life parameters."
+
+3. Two-Column Form Layout:
+   - Left Column (60% width - Input Form):
+     * Section 1: "Product Details"
+       - Product Name input field with placeholder "e.g. Arabica Roast Coffee Beans 500g" (required).
+       - Category selection: Toggle between "Select Existing Category" dropdown (Dairy, Beverages, Pantry, Bakery) and "Create New Category" text field.
+       - SKU Barcode field with generate button.
+     * Section 2: "Inventory & Pricing"
+       - Quantity On Hand numeric stepper (default: 10, min: 0).
+       - Unit Cost (Rs) currency field with prefix "Rs" (default: 150.00).
+       - Real-time calculated batch valuation display.
+     * Section 3: "Lifecycle & Thresholds"
+       - Toggle switch: "Enable Expiration Tracking".
+       - Expiry Date picker (calendar control, disabled if tracking is toggled off).
+       - Minimum Stock Alert Threshold input (default: 5 units).
+     * Action Footer:
+       - "Cancel / Reset" secondary gray button.
+       - "Register Product" primary blue button (#1d4ed8).
+
+   - Right Column (40% width - Real-Time Card Preview):
+     * Card Header: "Real-Time Card Preview" with caption "This is how this product will appear in the catalog."
+     * Preview Card Component:
+       - Top: Badge with category name and stock health indicator ("In Stock" pill).
+       - Middle: Bold product title, SKU ID tag, and unit pricing display.
+       - Key Metrics row: Stock Volume, Unit Price, Batch Valuation.
+       - Expiry Status row: Expiry date with countdown meter or "Non-perishable".
+       - Minimum Threshold indicator: "Alert triggers when stock drops to 5 units".
+
+Screen 5: Reports & Data Export Center
+A business reporting and data export screen for SmartShelf. Generates executive inventory summaries, financial valuation breakdowns, and customizable CSV exports. Desktop web app, Inter font, zero emojis.
+
+DESIGN SYSTEM (REQUIRED):
+- Platform: Desktop Web SaaS
+- Typography: Inter with formatted financial currency and structured summary cards
+- Action Color: Deep Slate Teal (#0f766e) for report generation and downloads
+
+Page Structure:
+1. Sidebar: "SmartShelf" navigation with "Reports & Export" highlighted.
+2. Page Header:
+   - Title: "Reports & Data Export"
+   - Subtitle: "Generate operational summaries and download complete inventory datasets for external audit or analysis."
+
+3. High-Level Financial KPI Bar (4 metrics):
+   - "Total Catalog SKUs": 1,248
+   - "Total Physical Units": 38,420
+   - "Gross Valuation": Rs 4,829,350.00
+   - "Weighted Unit Value": Rs 125.70
+
+4. Two-Column Reporting Workspace:
+   - Left Column (Executive Text Summary):
+     * Card title: "Executive Inventory Summary"
+     * Terminal/Report style styled container (light gray background, monospace tabular figures):
+       "SmartShelf Inventory Summary  |  Generated: 2026-10-15
+       =======================================================
+       Total Products Registered  : 1,248 SKUs
+       Total Units in Stock       : 38,420 units
+       Total Catalog Value        : Rs 4,829,350.00
+       Active Expired Items       : 3 items (0.24%)
+       Items Expiring in 7 Days   : 8 items (0.64%)
+       Low / Depleted Stock Items : 14 items (1.12%)
+       Safe Stock Ratio           : 98.00%"
+     * Button: "Copy Summary Text".
+
+   - Right Column (Custom CSV Export Configurator):
+     * Card title: "CSV Dataset Export"
+     * Radio selector: "Export Scope" -> Options: "Full Catalog (All records)", "Exceptions Only (Expired, Soon, or Low)", "Valuation Ledger".
+     * Checkbox options: "Include computed lifecycle flags", "Include audit timestamps".
+     * Primary action: Large teal button (#0f766e) with download icon: "Download CSV Report (smartshelf_inventory_2026-10-15.csv)".
+
+5. Export Dataset Preview (Bottom wide table):
+   - Table showing top 10 rows of the selected export data with all fields clearly aligned.
+
+
+Screen 6: System Audit Log & Governance Ledger
+An immutable audit trail and activity ledger for SmartShelf. Tracks every addition, modification, and deletion for accountability and regulatory compliance. Desktop web application, Inter font, zero emojis.
+
+DESIGN SYSTEM (REQUIRED):
+- Platform: Desktop Web SaaS
+- Style: Clean ledger aesthetic, monospaced timestamp and ID figures, distinct action pills
+- Colors: White cards, slate-100 backgrounds, action-specific subtle badges
+
+Page Structure:
+1. Sidebar: "SmartShelf" navigation with "System Audit Log" active.
+2. Page Header:
+   - Title: "System Audit Log"
+   - Subtitle: "Chronological event ledger recording all catalog additions, modifications, and deletions for governance and traceability."
+
+3. Action Metrics Strip (4 metrics):
+   - "Total Events Logged": 1,842
+   - "Products Added": 1,248 (with soft blue badge)
+   - "Product Edits": 514 (with soft amber badge)
+   - "Product Deletions": 80 (with soft red badge)
+
+4. Audit Filter Toolbar:
+   - Action Type Dropdown: "All Actions", "ADD (Create SKU)", "EDIT (Update Record)", "DELETE (Decommission)".
+   - Row Limit Dropdown: "50 entries", "100 entries", "200 entries", "500 entries".
+   - Search Field: "Search log details, product ID, or operator name..."
+
+5. Immutable Activity Ledger Table:
+   - Table Columns: Event ID, Timestamp (YYYY-MM-DD HH:MM:SS), Action Type, Product ID, Event Description, Operator.
+   - Action Type Badges:
+     * ADD: Slate blue pill with text "ADD"
+     * EDIT: Warm amber pill with text "EDIT"
+     * DELETE: Soft red pill with text "DELETE"
+
+

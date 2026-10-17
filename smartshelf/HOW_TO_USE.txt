@@ -1,0 +1,94 @@
+================================================================================
+                    SMARTSHELF ENTERPRISE PLATFORM GUIDE
+         Intelligent Inventory Monitoring & Automated Expiry Alert System
+================================================================================
+
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Platform Overview & Unified Architecture
+2. The Merged Application: Stitch UI + FastAPI + SQLite + Streamlit
+3. Technologies & Stack Used ("What Are Used")
+4. How to Run the Unified Application
+5. Stitch Enterprise UI Walkthrough (All 7 Screens + Embedded Streamlit Studio)
+6. REST API Specification & Endpoints (FastAPI)
+7. Business Logic & Calculation Rules
+8. Database & Data Storage Details
+9. Running Automated Tests
+10. Frequently Asked Questions
+================================================================================
+
+
+1. PLATFORM OVERVIEW & UNIFIED ARCHITECTURE
+--------------------------------------------------------------------------------
+SmartShelf is an intelligent inventory monitoring, shelf-life analytics, and 
+automated expiry alert platform engineered for supermarkets and warehouses.
+
+The platform is merged into ONE single main application:
+- Main Application: Google Stitch Enterprise UI
+- Backend: Python with FastAPI (main.py)
+- Database: SQLite (smartshelf/data/smartshelf.db)
+- Backup Interface: Streamlit Analytics Studio (embedded directly in the Stitch UI)
+- Interactive API Docs: http://localhost:5000/docs (Swagger UI)
+
+
+================================================================================
+2. THE MERGED SINGLE-APPLICATION ARCHITECTURE
+================================================================================
+Everything is launched with ONE command (`python main.py` or double-clicking `run_enterprise.bat`).
+- The primary Stitch UI runs at: http://localhost:5000
+- The FastAPI backend handles all business logic, validation, and database operations.
+- The Streamlit interface is retained as an embedded backup tab inside the Stitch UI
+  sidebar ("Streamlit Studio"), allowing users to explore both without opening separate tools.
+- Both interfaces share the exact same SQLite database file: `smartshelf/data/smartshelf.db`.
+
+
+================================================================================
+3. TECHNOLOGIES & STACK USED ("WHAT ARE USED")
+================================================================================
+1. Backend Web Framework:
+   - FastAPI (Python 3.11): Modern, high-performance web framework with automatic 
+     OpenAPI/Swagger documentation.
+   - Uvicorn: ASGI web server hosting the FastAPI application on port 5000.
+
+2. Primary Web Frontend:
+   - Google Stitch Enterprise Suite: 7 B2B SaaS screens with Inter typography, 
+     JetBrains Mono numbers, and Google Material Symbols Outlined icons.
+   - Tailwind CSS Engine (v3.4 CDN) with enterprise palette tokens.
+
+3. Database & Persistence:
+   - SQLite 3 with Write-Ahead Logging (WAL) and 100% parameterized queries.
+
+4. Backup Interface:
+   - Streamlit (v1.35.0+) accessible on port 8501 and embedded in the Stitch UI.
+
+6. Quality Assurance & Tests:
+   - Pytest (9 tests covering 100% of expiry, stock, and enrichment rules)
+
+
+================================================================================
+4. HOW TO RUN THE PROJECT (STEP-BY-STEP)
+================================================================================
+
+METHOD A: One-Click Launcher (Windows)
+--------------------------------------------------------------------------------
+Simply double-click the file:
+   `run_enterprise.bat`
+This automatically starts the server at http://localhost:5000.
+
+METHOD B: Terminal / Command Prompt (Python)
+--------------------------------------------------------------------------------
+1. Open PowerShell or Command Prompt in the project folder:
+   cd "d:\cppe kei project 1"
+
+2. Start the Enterprise Platform server:
+   python main.py 5000
+
+3. Open your browser and visit:
+   http://localhost:5000
+
+METHOD C: Running with npm
+--------------------------------------------------------------------------------
+   npm start
+
+Interactive Swagger API Documentation:
+   http://localhost:5000/docs

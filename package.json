@@ -1,0 +1,13 @@
+{
+  "name": "smartshelf-enterprise",
+  "version": "1.2.0",
+  "description": "SmartShelf Enterprise Inventory & Expiry Management Suite (FastAPI + Stitch UI)",
+  "scripts": {
+    "start": "python main.py 5000",
+    "fastapi": "python main.py 5000",
+    "streamlit": "cd smartshelf && streamlit run app.py"
+  },
+  "dependencies": {
+    "adm-zip": "^0.6.1"
+  }
+}

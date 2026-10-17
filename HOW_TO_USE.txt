@@ -1,0 +1,213 @@
+================================================================================
+                    SMARTSHELF ENTERPRISE PLATFORM GUIDE
+         Intelligent Inventory Monitoring & Automated Expiry Alert System
+================================================================================
+
+TABLE OF CONTENTS
+--------------------------------------------------------------------------------
+1. Platform Overview & Unified Architecture
+2. The Merged Application: Stitch UI + FastAPI + SQLite + Streamlit
+3. Technologies & Stack Used ("What Are Used")
+4. How to Run the Unified Application
+5. Stitch Enterprise UI Walkthrough (All 7 Screens + Embedded Streamlit Studio)
+6. REST API Specification & Endpoints (FastAPI)
+7. Business Logic & Calculation Rules
+8. Database & Data Storage Details
+9. Running Automated Tests
+10. Frequently Asked Questions
+================================================================================
+
+
+1. PLATFORM OVERVIEW & UNIFIED ARCHITECTURE
+--------------------------------------------------------------------------------
+SmartShelf is an intelligent inventory monitoring, shelf-life analytics, and 
+automated expiry alert platform engineered for supermarkets and warehouses.
+
+The platform is merged into ONE single main application:
+- Main Application: Google Stitch Enterprise UI
+- Backend: Python with FastAPI (main.py)
+- Database: SQLite (smartshelf/data/smartshelf.db)
+- Backup Interface: Streamlit Analytics Studio (embedded directly in the Stitch UI)
+- Interactive API Docs: http://localhost:5000/docs (Swagger UI)
+
+
+================================================================================
+2. THE MERGED SINGLE-APPLICATION ARCHITECTURE
+================================================================================
+Everything is launched with ONE command (`python main.py` or double-clicking `run_enterprise.bat`).
+- The primary Stitch UI runs at: http://localhost:5000
+- The FastAPI backend handles all business logic, validation, and database operations.
+- The Streamlit interface is retained as an embedded backup tab inside the Stitch UI
+  sidebar ("Streamlit Studio"), allowing users to explore both without opening separate tools.
+- Both interfaces share the exact same SQLite database file: `smartshelf/data/smartshelf.db`.
+
+
+================================================================================
+3. TECHNOLOGIES & STACK USED ("WHAT ARE USED")
+================================================================================
+1. Backend Web Framework:
+   - FastAPI (Python 3.11): Modern, high-performance web framework with automatic 
+     OpenAPI/Swagger documentation.
+   - Uvicorn: ASGI web server hosting the FastAPI application on port 5000.
+
+2. Primary Web Frontend:
+   - Google Stitch Enterprise Suite: 7 B2B SaaS screens with Inter typography, 
+     JetBrains Mono numbers, and Google Material Symbols Outlined icons.
+   - Tailwind CSS Engine (v3.4 CDN) with enterprise palette tokens.
+
+3. Database & Persistence:
+   - SQLite 3 with Write-Ahead Logging (WAL) and 100% parameterized queries.
+
+4. Backup Interface:
+   - Streamlit (v1.35.0+) accessible on port 8501 and embedded in the Stitch UI.
+
+6. Quality Assurance & Tests:
+   - Pytest (9 tests covering 100% of expiry, stock, and enrichment rules)
+
+
+================================================================================
+4. HOW TO RUN THE PROJECT (STEP-BY-STEP)
+================================================================================
+
+METHOD A: One-Click Launcher (Windows)
+--------------------------------------------------------------------------------
+Simply double-click the file:
+   `run_enterprise.bat`
+This automatically starts the server at http://localhost:5000.
+
+METHOD B: Terminal / Command Prompt (Python)
+--------------------------------------------------------------------------------
+1. Open PowerShell or Command Prompt in the project folder:
+   cd "d:\cppe kei project 1"
+
+2. Start the Enterprise Platform server:
+   python server.py
+
+3. Open your browser and visit:
+   http://localhost:5000
+
+METHOD C: Running with npm
+--------------------------------------------------------------------------------
+   npm start
+
+METHOD D: Running the Streamlit App (Optional)
+--------------------------------------------------------------------------------
+   cd smartshelf
+   streamlit run app.py
+   (Opens at http://localhost:8501)
+
+
+================================================================================
+5. STITCH ENTERPRISE UI WALKTHROUGH (ALL 7 SCREENS)
+================================================================================
+
+1. SCREEN 1: EXECUTIVE INVENTORY DASHBOARD (#dashboard)
+   - 5 Top KPI Cards: Catalog SKUs, Total Physical Units, Stock Valuation, 
+     Expired Batches, and Low Stock Reorder Items.
+   - Dynamic Operational Alert Banners: Critical notice for expired goods and 
+     reorder warnings.
+   - Visual Units by Category: Horizontal bar distribution chart.
+   - Stock Health Breakdown: Segmented multi-color composite bar (In Stock vs 
+     Low Stock vs Out of Stock).
+   - Upcoming Shelf Expirations Table: Priority batches requiring FEFO rotation.
+
+2. SCREEN 2: INVENTORY CATALOG & INSPECTOR (#catalog)
+   - Multi-Filter Matrix: Real-time search query, Category dropdown, Stock Level 
+     dropdown, and Expiration Lifecycle dropdown.
+   - Live Product Grid: Dense table displaying SKU, Name, Category, Stock, Unit 
+     Price, and Badges.
+   - Item Specification Inspector (Right Drawer): Clicking any table row opens 
+     its full profile, including photo, threshold progress bar, batch valuation, 
+     and direct Edit / Delete action buttons.
+
+3. SCREEN 3: REGISTER NEW PRODUCT (#register)
+   - Form Sections:
+     * Product Identity (Trade Name, Category selector or Custom entry)
+     * Inventory & Pricing (Quantity on hand, Unit price in Rs, with live batch valuation)
+     * Lifecycle & Alerts (Perishable toggle, Expiry date calendar, Min stock threshold)
+   - Real-Time Live Preview Card: Displays live updates as you type before saving.
+   - Automated Database Insertion and Audit Log generation.
+
+4. SCREEN 4: EDIT PRODUCT & LIFECYCLE MANAGER (#edit)
+   - Product Selector Dropdown: Select any existing item from the inventory.
+   - Pre-fills all current fields (Quantity, Price, Category, Expiry, Min Stock).
+   - One-click update with instant synchronization back to SQLite and Audit Log.
+
+5. SCREEN 5: ALERTS & EXCHANGES HUB (#alerts)
+   - Bento Risk Trio:
+     * Expired Stock (with automated total write-off financial loss calculator)
+     * Expiring Soon (batches reaching expiry within 7 days)
+     * Low Safety Stock (products below minimum reorder levels)
+   - Dedicated Tables for immediate shelf removal and replenishment orders.
+
+6. SCREEN 6: REPORTS & DATA EXPORT CENTER (#reports)
+   - High-Level Financial Metrics (Total Catalog Valuation, Expired Write-Off Loss).
+   - One-Click CSV Export: Downloads complete `smartshelf_inventory.csv`.
+   - One-Click Text Summary: Downloads `smartshelf_summary.txt`.
+
+7. SCREEN 7: SYSTEM AUDIT LOG (#audit)
+   - Chronological event ledger tracking all ADD, EDIT, and DELETE actions.
+   - Displays Log ID, Timestamp, Action Badge, Product Reference, and Event Details.
+   - One-Click "Export Audit Log (JSON)" button.
+
+
+================================================================================
+6. REST API SPECIFICATION & ENDPOINTS
+================================================================================
+Base URL: http://localhost:5000
+
+| Method | Endpoint              | Description                                       |
+|--------|-----------------------|---------------------------------------------------|
+| GET    | /api/stats            | High-level KPIs, category bars, stock breakdown   |
+| GET    | /api/products         | List all products (supports ?q=&category=&status=)|
+| GET    | /api/products/<id>    | Get single product details by ID                  |
+| POST   | /api/products         | Add a new product (JSON body)                     |
+| PUT    | /api/products/<id>    | Update product details (JSON body)                |
+| DELETE | /api/products/<id>    | Remove product from catalog                       |
+| GET    | /api/alerts           | Lists of expired, expiring soon, and low stock    |
+| GET    | /api/audit-log        | Recent system audit entries                       |
+| GET    | /api/export/csv       | Download full inventory as UTF-8 CSV              |
+| GET    | /api/export/summary   | Download text summary report                      |
+| POST   | /api/seed             | Reset demo inventory items                        |
+
+
+================================================================================
+7. BUSINESS LOGIC & CALCULATION RULES
+================================================================================
+
+EXPIRY RULES (Threshold: 7 Days)
+- Expired: Expiry Date < Today's Date
+- Expiring Soon: 0 <= (Expiry Date - Today's Date) <= 7 Days
+- OK: (Expiry Date - Today's Date) > 7 Days
+- N/A: Product has no expiry date (e.g. household items)
+
+STOCK STATUS RULES
+- Out of Stock: Quantity == 0
+- Low Stock: 0 < Quantity <= Min Stock Threshold (default: 5)
+- In Stock: Quantity > Min Stock Threshold
+
+
+================================================================================
+8. DATABASE & DATA STORAGE DETAILS
+================================================================================
+- File Location: `smartshelf/data/smartshelf.db`
+- Tables:
+  1. `products`:
+     id, name, category, quantity, unit_price, expiry_date, min_stock, 
+     created_at, updated_at
+  2. `audit_log`:
+     id, action (ADD/EDIT/DELETE), product_id, details, timestamp
+
+
+================================================================================
+9. RUNNING AUTOMATED TESTS
+================================================================================
+To run the automated Pytest test suite:
+   cd smartshelf
+   pytest tests/ -v
+
+Result: All 9 test cases pass in under 0.1 seconds.
+
+================================================================================
+                       SmartShelf Enterprise v1.2.0
+================================================================================
