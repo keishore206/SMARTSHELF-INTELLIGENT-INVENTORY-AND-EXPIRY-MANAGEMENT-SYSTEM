@@ -14,7 +14,7 @@
 
 Experience the complete enterprise inventory and expiry platform live in your browser — zero installation or setup required:
 
-👉 **[https://keishore206.github.io/SMARTSHELF-INTELLIGENT-INVENTORY-AND-EXPIRY-MANAGEMENT-SYSTEM/]([https://keishore206.github.io/SMARTSHELF-INTELLIGENT-INVENTORY-AND-EXPIRY-MANAGEMENT-SYSTEM/](https://keishore206.github.io/SMARTSHELF-Intelligent-Inventory-and-Expiry-Management-System/)**
+👉 **(https://keishore206.github.io/SMARTSHELF-Intelligent-Inventory-and-Expiry-Management-System/)**
 
 | Capability | Cloud Hosted Mode (GitHub Pages) | Local Enterprise Server (`python main.py`) |
 | :--- | :--- | :--- |
