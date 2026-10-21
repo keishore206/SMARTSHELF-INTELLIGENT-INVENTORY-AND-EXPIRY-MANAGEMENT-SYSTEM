@@ -7,12 +7,6 @@
 [![Google Stitch UI](https://img.shields.io/badge/Google%20Stitch-Enterprise%20UI-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://stitch.withgoogle.com/)
 [![Pytest](https://img.shields.io/badge/Pytest-Passing%20(9%2F9)-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://pytest.org/)
 
-> **Academic Project**: Mini Project 2 (CPPE)  
-> **Student**: KEISHORE G (Register No: `23UCS086`)  
-> **Project Guide & Coordinator**: Dr. M. SHANMUGAM  
-> **Institution**: Sri Manakula Vinayagar Engineering College (Autonomous), Pondicherry University  
-> **Academic Year**: October 2026
-
 ---
 
 ## 📌 Project Overview
