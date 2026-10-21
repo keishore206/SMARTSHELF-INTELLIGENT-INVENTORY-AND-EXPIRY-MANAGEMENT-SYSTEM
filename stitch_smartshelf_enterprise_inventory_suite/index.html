@@ -200,8 +200,15 @@
     <!-- Sidebar Footer -->
     <div class="p-space-md border-t border-[#1e293b] bg-inverse-surface/80">
       <div class="flex items-center justify-between text-slate-400 font-tabular-data text-caption-regular">
-        <span id="current-date-display">2026-10-17</span>
+        <span id="current-date-display">2026-10-21</span>
         <span class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-badge-label text-badge-label uppercase">v1.2.0 Enterprise</span>
+      </div>
+      <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+        <a href="https://github.com/keishore206/SMARTSHELF-INTELLIGENT-INVENTORY-AND-EXPIRY-MANAGEMENT-SYSTEM" target="_blank" rel="noopener noreferrer" class="hover:text-white flex items-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-[13px]">code</span>
+          <span>GitHub Repo</span>
+        </a>
+        <button onclick="resetDemoDataPrompt()" class="hover:text-amber-400 transition-colors">Reset Demo</button>
       </div>
     </div>
   </aside>
@@ -217,9 +224,14 @@
           <input id="global-search-input" class="w-full h-[38px] pl-9 pr-space-md bg-surface-container-lowest border border-outline-variant rounded-lg font-body-regular text-body-regular text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all" placeholder="Quick search product name or SKU..." type="text"/>
         </div>
         <!-- System Operational Pill -->
-        <div class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/40 border border-secondary">
-          <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
-          <span class="font-caption-medium text-caption-medium text-on-secondary-container">Operational (SQLite Active)</span>
+        <div class="hidden lg:flex items-center gap-2">
+          <div id="system-status-pill" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/40 border border-secondary">
+            <span id="system-status-dot" class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+            <span id="system-status-text" class="font-caption-medium text-caption-medium text-on-secondary-container">Checking system...</span>
+          </div>
+          <button id="reset-demo-btn" onclick="resetDemoDataPrompt()" class="hidden text-[11px] px-2 py-1 rounded-md border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Reset sample inventory to initial defaults">
+            Reset Demo
+          </button>
         </div>
       </div>
 
@@ -1401,10 +1413,19 @@
               </a>
               <button onclick="document.getElementById('streamlit-frame').src = 'http://localhost:8501/?embedded=true&t=' + Date.now()" class="h-[36px] px-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body-medium text-caption-medium flex items-center gap-1 transition-colors shadow-sm" title="Reload Frame">
                 <span class="material-symbols-outlined text-[16px]">refresh</span>
-                <span>Refresh Frame</span>
+                <span>Reload Frame</span>
               </button>
             </div>
           </div>
+
+          <!-- Cloud Hosting Notice Banner -->
+          <div class="mb-3 p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-body-medium flex items-start gap-3 shadow-xs">
+            <span class="material-symbols-outlined text-primary text-[22px] mt-0.5">info</span>
+            <div class="flex-1">
+              <strong class="font-body-semibold">Hosted Mode Notice:</strong> Streamlit Analytics is a secondary Python-powered studio intended for local server execution. When running the repository locally (`python main.py 5000` or `streamlit run smartshelf/app.py`), the live interactive charts embed directly into the frame below. In this hosted GitHub Pages environment, all core inventory management, CRUD operations, expiry horizons, alerts, CSV exports, and audit logging remain 100% active and interactive in the other tabs!
+            </div>
+          </div>
+
           <!-- Embedded Streamlit Container -->
           <div class="flex-1 w-full bg-white rounded-xl shadow-sm overflow-hidden border border-outline-variant/60">
             <iframe id="streamlit-frame" src="http://localhost:8501/?embedded=true" class="w-full h-full border-0"></iframe>
@@ -1449,9 +1470,336 @@
     let auditLogs = [];
     let currentInspectedProduct = null;
     let pendingDeleteId = null;
+    let isBackendActive = false;
 
     // Base API path
     const API_BASE = window.location.origin;
+
+    // Relative Date Formatter Helper
+    function addDays(num) {
+      const d = new Date();
+      d.setDate(d.getDate() + num);
+      return d.toISOString().split('T')[0];
+    }
+
+    function nowStr() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    // Default Enterprise Seed Data (matches SQLite database.py schema)
+    function getDefaultProducts() {
+      return [
+        { id: 1, name: "Whole Milk 1L", category: "Dairy & Refrigerated", quantity: 42, unit_price: 32.0, expiry_date: addDays(3), min_stock: 15, created_at: nowStr(), updated_at: nowStr() },
+        { id: 2, name: "Artisan Baguette 400g", category: "Bakery", quantity: 18, unit_price: 45.0, expiry_date: addDays(-1), min_stock: 10, created_at: nowStr(), updated_at: nowStr() },
+        { id: 3, name: "Fresh Greek Yogurt 500g", category: "Dairy & Refrigerated", quantity: 0, unit_price: 85.0, expiry_date: addDays(-3), min_stock: 10, created_at: nowStr(), updated_at: nowStr() },
+        { id: 4, name: "Cold Pressed Orange Juice 350ml", category: "Beverages", quantity: 8, unit_price: 65.0, expiry_date: addDays(1), min_stock: 15, created_at: nowStr(), updated_at: nowStr() },
+        { id: 5, name: "Cold Brew Coffee 330ml", category: "Beverages", quantity: 120, unit_price: 85.0, expiry_date: "2027-01-15", min_stock: 20, created_at: nowStr(), updated_at: nowStr() },
+        { id: 6, name: "Baby Spinach 200g", category: "Produce", quantity: 14, unit_price: 45.0, expiry_date: addDays(2), min_stock: 20, created_at: nowStr(), updated_at: nowStr() },
+        { id: 7, name: "Organic Basmati Rice 1kg", category: "Grocery", quantity: 25, unit_price: 70.0, expiry_date: "2027-04-01", min_stock: 5, created_at: nowStr(), updated_at: nowStr() },
+        { id: 8, name: "Dishwashing Liquid Citrus 750ml", category: "Household", quantity: 32, unit_price: 95.0, expiry_date: null, min_stock: 10, created_at: nowStr(), updated_at: nowStr() },
+        { id: 9, name: "Arabica Roast Coffee Beans 500g", category: "Beverages", quantity: 65, unit_price: 350.0, expiry_date: "2027-05-15", min_stock: 15, created_at: nowStr(), updated_at: nowStr() },
+        { id: 10, name: "Almond Milk Unsweetened 1L", category: "Dairy & Refrigerated", quantity: 5, unit_price: 110.0, expiry_date: addDays(5), min_stock: 10, created_at: nowStr(), updated_at: nowStr() },
+        { id: 11, name: "Sourdough Artisan Loaf", category: "Bakery", quantity: 3, unit_price: 60.0, expiry_date: addDays(-2), min_stock: 5, created_at: nowStr(), updated_at: nowStr() },
+        { id: 12, name: "Organic Haas Avocados 4pk", category: "Produce", quantity: 45, unit_price: 120.0, expiry_date: addDays(5), min_stock: 10, created_at: nowStr(), updated_at: nowStr() }
+      ];
+    }
+
+    function getDefaultAuditLogs() {
+      return [
+        { id: 1, action: "ADD", product_id: 1, details: "Ingested baseline perishable lot: Whole Milk 1L (Qty: 42)", timestamp: nowStr() },
+        { id: 2, action: "ADD", product_id: 4, details: "Safety buffer replenishment: Cold Pressed Orange Juice 350ml", timestamp: nowStr() },
+        { id: 3, action: "EDIT", product_id: 2, details: "Price override: Artisan Baguette 400g marked down for fast clearance", timestamp: nowStr() },
+        { id: 4, action: "ADD", product_id: 9, details: "Warehouse receipt logged for Arabica Roast Coffee Beans 500g", timestamp: nowStr() }
+      ];
+    }
+
+    // Business Logic Engine (mirrors inventory_logic.py)
+    function enrichProduct(p) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let expiry_status = "N/A";
+      let days_until_expiry = null;
+
+      if (p.expiry_date) {
+        const parts = p.expiry_date.split('-');
+        if (parts.length === 3) {
+          const exp = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+          exp.setHours(0, 0, 0, 0);
+          const diffDays = Math.round((exp.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+          days_until_expiry = diffDays;
+          if (diffDays < 0) {
+            expiry_status = "Expired";
+          } else if (diffDays <= 7) {
+            expiry_status = "Expiring Soon";
+          } else {
+            expiry_status = "OK";
+          }
+        }
+      }
+
+      let stock_status = "In Stock";
+      const minStock = p.min_stock !== undefined ? parseInt(p.min_stock) : 5;
+      const qty = parseInt(p.quantity || 0);
+
+      if (qty === 0) {
+        stock_status = "Out of Stock";
+      } else if (qty <= minStock) {
+        stock_status = "Low Stock";
+      }
+
+      return {
+        ...p,
+        quantity: qty,
+        unit_price: parseFloat(p.unit_price || 0),
+        min_stock: minStock,
+        expiry_status,
+        days_until_expiry,
+        stock_status
+      };
+    }
+
+    // Local Storage Reactive Data Store
+    const LocalStorageStore = {
+      KEY_PRODUCTS: 'smartshelf_products_v1',
+      KEY_LOGS: 'smartshelf_audit_logs_v1',
+
+      getProductsRaw() {
+        try {
+          const stored = localStorage.getItem(this.KEY_PRODUCTS);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {
+          console.warn("Could not read localStorage:", e);
+        }
+        const seeds = getDefaultProducts();
+        this.saveProducts(seeds);
+        return seeds;
+      },
+
+      saveProducts(products) {
+        try {
+          localStorage.setItem(this.KEY_PRODUCTS, JSON.stringify(products));
+        } catch (e) {
+          console.error("Failed to save to localStorage:", e);
+        }
+      },
+
+      getEnrichedProducts() {
+        const raw = this.getProductsRaw();
+        return raw.map(enrichProduct);
+      },
+
+      addProduct(item) {
+        const products = this.getProductsRaw();
+        const nextId = products.reduce((max, p) => Math.max(max, p.id || 0), 0) + 1;
+        const now = nowStr();
+        const newProduct = {
+          id: nextId,
+          name: item.name.trim(),
+          category: item.category.trim(),
+          quantity: parseInt(item.quantity || 0),
+          unit_price: parseFloat(item.unit_price || 0),
+          expiry_date: item.expiry_date || null,
+          min_stock: parseInt(item.min_stock || 5),
+          created_at: now,
+          updated_at: now
+        };
+        products.push(newProduct);
+        this.saveProducts(products);
+        this.addAuditLog("ADD", nextId, `Added product '${newProduct.name}' with initial stock ${newProduct.quantity}`);
+        return enrichProduct(newProduct);
+      },
+
+      updateProduct(id, updates) {
+        const products = this.getProductsRaw();
+        const idx = products.findIndex(p => p.id == id);
+        if (idx === -1) return null;
+        const now = nowStr();
+        products[idx] = {
+          ...products[idx],
+          name: updates.name.trim(),
+          category: updates.category.trim(),
+          quantity: parseInt(updates.quantity || 0),
+          unit_price: parseFloat(updates.unit_price || 0),
+          expiry_date: updates.expiry_date || null,
+          min_stock: parseInt(updates.min_stock || 5),
+          updated_at: now
+        };
+        this.saveProducts(products);
+        this.addAuditLog("EDIT", id, `Updated SKU #${id} (${products[idx].name}): ${products[idx].quantity} units @ Rs ${products[idx].unit_price}`);
+        return enrichProduct(products[idx]);
+      },
+
+      deleteProduct(id) {
+        let products = this.getProductsRaw();
+        const item = products.find(p => p.id == id);
+        const name = item ? item.name : `SKU #${id}`;
+        products = products.filter(p => p.id != id);
+        this.saveProducts(products);
+        this.addAuditLog("DELETE", id, `De-registered product '${name}' from inventory catalog`);
+        return true;
+      },
+
+      getStats() {
+        const products = this.getEnrichedProducts();
+        const total_products = products.length;
+        const total_units = products.reduce((s, p) => s + p.quantity, 0);
+        const total_value = products.reduce((s, p) => s + (p.quantity * p.unit_price), 0);
+
+        const expired_count = products.filter(p => p.expiry_status === "Expired").length;
+        const expiring_soon_count = products.filter(p => p.expiry_status === "Expiring Soon").length;
+        const out_of_stock_count = products.filter(p => p.stock_status === "Out of Stock").length;
+        const low_stock_count = products.filter(p => p.stock_status === "Low Stock" || p.stock_status === "Out of Stock").length;
+        const in_stock_count = Math.max(0, total_products - low_stock_count);
+
+        // Category breakdown
+        const catMap = {};
+        products.forEach(p => {
+          const c = p.category || "General";
+          catMap[c] = (catMap[c] || 0) + p.quantity;
+        });
+
+        const sortedCats = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
+        const divisor = total_units > 0 ? total_units : 1;
+        const categories = sortedCats.map(([name, units]) => ({
+          name,
+          units,
+          pct: Math.round((units / divisor) * 100 * 10) / 10
+        }));
+
+        return {
+          total_products,
+          total_units,
+          total_value,
+          expired_count,
+          expiring_soon_count,
+          low_stock_count,
+          out_of_stock_count,
+          in_stock_count,
+          categories
+        };
+      },
+
+      getAlerts() {
+        const products = this.getEnrichedProducts();
+        const expired = products.filter(p => p.expiry_status === "Expired");
+        const expiring_soon = products.filter(p => p.expiry_status === "Expiring Soon");
+        const low_stock = products.filter(p => p.stock_status === "Low Stock");
+        const out_of_stock = products.filter(p => p.stock_status === "Out of Stock");
+        const expired_value = expired.reduce((sum, p) => sum + (p.quantity * p.unit_price), 0);
+
+        return {
+          expired,
+          expiring_soon,
+          low_stock,
+          out_of_stock,
+          expired_value,
+          total_alerts: expired.length + expiring_soon.length + low_stock.length + out_of_stock.length
+        };
+      },
+
+      getAuditLogs() {
+        try {
+          const stored = localStorage.getItem(this.KEY_LOGS);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {
+          console.warn("Could not read audit logs:", e);
+        }
+        const seeds = getDefaultAuditLogs();
+        this.saveAuditLogs(seeds);
+        return seeds;
+      },
+
+      saveAuditLogs(logs) {
+        try {
+          localStorage.setItem(this.KEY_LOGS, JSON.stringify(logs));
+        } catch (e) {
+          console.error("Failed to save audit logs:", e);
+        }
+      },
+
+      addAuditLog(action, product_id, details) {
+        const logs = this.getAuditLogs();
+        const nextId = logs.reduce((m, l) => Math.max(m, l.id || 0), 0) + 1;
+        logs.unshift({
+          id: nextId,
+          action,
+          product_id,
+          details,
+          timestamp: nowStr()
+        });
+        this.saveAuditLogs(logs);
+      },
+
+      resetToDemo() {
+        localStorage.removeItem(this.KEY_PRODUCTS);
+        localStorage.removeItem(this.KEY_LOGS);
+        this.getProductsRaw();
+        this.getAuditLogs();
+      }
+    };
+
+    // System connectivity checker
+    async function checkBackendConnectivity() {
+      if (window.location.hostname.includes('github.io') || window.location.protocol === 'file:') {
+        isBackendActive = false;
+        updateSystemStatusIndicator(false);
+        return;
+      }
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1200);
+        const res = await fetch(API_BASE + '/api/stats', { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          isBackendActive = true;
+          updateSystemStatusIndicator(true);
+          return;
+        }
+      } catch (e) {
+        // Backend offline, fallback to local storage
+      }
+      isBackendActive = false;
+      updateSystemStatusIndicator(false);
+    }
+
+    function updateSystemStatusIndicator(active) {
+      const pill = document.getElementById('system-status-pill');
+      const text = document.getElementById('system-status-text');
+      const dot = document.getElementById('system-status-dot');
+      const resetBtn = document.getElementById('reset-demo-btn');
+
+      if (!pill || !text) return;
+
+      if (active) {
+        pill.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/40 border border-secondary';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-secondary animate-pulse';
+        text.textContent = 'Operational (FastAPI Connected)';
+        if (resetBtn) resetBtn.classList.add('hidden');
+      } else {
+        pill.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/40 text-emerald-800';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+        text.textContent = 'Live Cloud Demo (Local Storage Active)';
+        if (resetBtn) resetBtn.classList.remove('hidden');
+      }
+    }
+
+    function resetDemoDataPrompt() {
+      if (confirm('Reset inventory catalog and audit ledger to default enterprise demo state?')) {
+        LocalStorageStore.resetToDemo();
+        showToast('Demo inventory dataset successfully restored.');
+        const hash = window.location.hash.replace('#', '') || 'dashboard';
+        navigateTo(hash);
+      }
+    }
 
     // Toast Notification Utility
     function showToast(message) {
@@ -1535,23 +1883,31 @@
 
     // API calls
     async function fetchAPI(endpoint, options = {}) {
-      try {
-        const res = await fetch(API_BASE + endpoint, {
-          headers: { 'Content-Type': 'application/json' },
-          ...options
-        });
-        if (!res.ok) throw new Error('API error: ' + res.status);
-        return await res.json();
-      } catch (err) {
-        console.warn('API call failed, falling back:', err);
-        return null;
+      if (isBackendActive) {
+        try {
+          const res = await fetch(API_BASE + endpoint, {
+            headers: { 'Content-Type': 'application/json' },
+            ...options
+          });
+          if (res.ok) return await res.json();
+        } catch (err) {
+          console.warn('API call failed, switching to local store:', err);
+          isBackendActive = false;
+          updateSystemStatusIndicator(false);
+        }
       }
+      return null;
     }
 
     // ================= DASHBOARD CONTROLLER =================
     async function loadDashboard() {
-      const stats = await fetchAPI('/api/stats');
-      const products = await fetchAPI('/api/products') || [];
+      let stats = await fetchAPI('/api/stats');
+      let products = await fetchAPI('/api/products');
+
+      if (!stats || !products) {
+        stats = LocalStorageStore.getStats();
+        products = LocalStorageStore.getEnrichedProducts();
+      }
       allProducts = products;
 
       if (stats) {
@@ -1664,7 +2020,11 @@
 
     // ================= CATALOG CONTROLLER =================
     async function loadCatalog() {
-      allProducts = await fetchAPI('/api/products') || [];
+      let products = await fetchAPI('/api/products');
+      if (!products) {
+        products = LocalStorageStore.getEnrichedProducts();
+      }
+      allProducts = products;
       applyCatalogFilters();
       if (allProducts.length > 0 && !currentInspectedProduct) {
         inspectProduct(allProducts[0].id);
@@ -1809,7 +2169,11 @@
 
     document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
       if (!pendingDeleteId) return;
-      const res = await fetchAPI('/api/products/' + pendingDeleteId, { method: 'DELETE' });
+      if (isBackendActive) {
+        await fetchAPI('/api/products/' + pendingDeleteId, { method: 'DELETE' });
+      } else {
+        LocalStorageStore.deleteProduct(pendingDeleteId);
+      }
       closeDeleteModal();
       showToast('Product successfully removed from active catalog.');
       currentInspectedProduct = null;
@@ -1880,7 +2244,7 @@
       document.getElementById('reg-price').value = '380.00';
       document.getElementById('reg-has-expiry').checked = true;
       toggleRegisterExpiry();
-      document.getElementById('reg-expiry-date').value = '2027-04-30';
+      document.getElementById('reg-expiry-date').value = addDays(180);
       document.getElementById('reg-min-stock').value = '8';
       syncRegisterPreview();
     }
@@ -1907,22 +2271,35 @@
       }
 
       const payload = { name, category, quantity, unit_price, expiry_date, min_stock };
-      const res = await fetchAPI('/api/products', {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
 
-      if (res) {
-        showToast(`Product "${name}" registered successfully!`);
-        resetRegisterForm();
-        navigateTo('catalog');
+      if (isBackendActive) {
+        const res = await fetchAPI('/api/products', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        if (res) {
+          showToast(`Product "${name}" registered successfully!`);
+          resetRegisterForm();
+          navigateTo('catalog');
+          return;
+        }
       }
+
+      // Local storage fallback
+      LocalStorageStore.addProduct(payload);
+      showToast(`Product "${name}" registered successfully! (Saved to Browser)`);
+      resetRegisterForm();
+      navigateTo('catalog');
     }
 
 
     // ================= EDIT PRODUCT CONTROLLER =================
     async function populateEditProductDropdown() {
-      allProducts = await fetchAPI('/api/products') || [];
+      let products = await fetchAPI('/api/products');
+      if (!products) {
+        products = LocalStorageStore.getEnrichedProducts();
+      }
+      allProducts = products;
       const select = document.getElementById('edit-product-select');
       select.innerHTML = '';
 
@@ -1968,22 +2345,32 @@
       }
 
       const payload = { name, category, quantity, unit_price, expiry_date, min_stock };
-      const res = await fetchAPI('/api/products/' + id, {
-        method: 'PUT',
-        body: JSON.stringify(payload)
-      });
 
-      if (res) {
-        showToast(`Product #${id} updated successfully.`);
-        navigateTo('catalog');
+      if (isBackendActive) {
+        const res = await fetchAPI('/api/products/' + id, {
+          method: 'PUT',
+          body: JSON.stringify(payload)
+        });
+        if (res) {
+          showToast(`Product #${id} updated successfully.`);
+          navigateTo('catalog');
+          return;
+        }
       }
+
+      // Local storage fallback
+      LocalStorageStore.updateProduct(id, payload);
+      showToast(`Product #${id} updated successfully.`);
+      navigateTo('catalog');
     }
 
 
     // ================= ALERTS HUB CONTROLLER =================
     async function loadAlerts() {
-      const data = await fetchAPI('/api/alerts');
-      if (!data) return;
+      let data = await fetchAPI('/api/alerts');
+      if (!data) {
+        data = LocalStorageStore.getAlerts();
+      }
 
       document.getElementById('alerts-expired-batches').textContent = `${data.expired.length} Batches`;
       document.getElementById('alerts-expired-valuation').textContent = formatCurrency(data.expired_value);
@@ -2052,8 +2439,13 @@
 
     // ================= REPORTS CONTROLLER =================
     async function loadReports() {
-      const stats = await fetchAPI('/api/stats');
-      const alerts = await fetchAPI('/api/alerts');
+      let stats = await fetchAPI('/api/stats');
+      let alerts = await fetchAPI('/api/alerts');
+
+      if (!stats || !alerts) {
+        stats = LocalStorageStore.getStats();
+        alerts = LocalStorageStore.getAlerts();
+      }
 
       if (stats) {
         document.getElementById('rep-sku-count').textContent = stats.total_products;
@@ -2066,17 +2458,75 @@
     }
 
     function downloadCSV() {
-      window.open(API_BASE + '/api/export/csv', '_blank');
+      if (isBackendActive) {
+        window.open(API_BASE + '/api/export/csv', '_blank');
+        return;
+      }
+      // Browser-generated CSV download
+      const products = LocalStorageStore.getEnrichedProducts();
+      const headers = ["id", "name", "category", "quantity", "unit_price", "expiry_date", "min_stock", "stock_status", "expiry_status", "days_until_expiry", "created_at", "updated_at"];
+      let csv = "\uFEFF" + headers.join(",") + "\r\n";
+      products.forEach(p => {
+        const row = headers.map(h => {
+          let val = p[h] !== null && p[h] !== undefined ? String(p[h]) : "";
+          if (val.includes(",") || val.includes('"') || val.includes('\n')) {
+            val = `"${val.replace(/"/g, '""')}"`;
+          }
+          return val;
+        });
+        csv += row.join(",") + "\r\n";
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `smartshelf_inventory_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast("CSV inventory report downloaded successfully.");
     }
 
     function downloadSummary() {
-      window.open(API_BASE + '/api/export/summary', '_blank');
+      if (isBackendActive) {
+        window.open(API_BASE + '/api/export/summary', '_blank');
+        return;
+      }
+      // Browser-generated summary text download
+      const stats = LocalStorageStore.getStats();
+      const today = new Date().toISOString().split('T')[0];
+      const summary = [
+        `SmartShelf Inventory Summary  |  Generated: ${today}`,
+        "=".repeat(55),
+        `Total products     : ${stats.total_products}`,
+        `Total units        : ${stats.total_units.toLocaleString()}`,
+        `Total stock value  : Rs ${stats.total_value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        `Expired items      : ${stats.expired_count}`,
+        `Expiring soon      : ${stats.expiring_soon_count}`,
+        `Low / out of stock : ${stats.low_stock_count}`,
+      ].join("\r\n");
+
+      const blob = new Blob([summary], { type: "text/plain;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "smartshelf_summary.txt";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast("Executive summary report downloaded.");
     }
 
 
     // ================= AUDIT LOG CONTROLLER =================
     async function loadAuditLog() {
-      auditLogs = await fetchAPI('/api/audit-log') || [];
+      let logs = await fetchAPI('/api/audit-log');
+      if (!logs) {
+        logs = LocalStorageStore.getAuditLogs();
+      }
+      auditLogs = logs;
       const tbody = document.getElementById('audit-table-body');
       tbody.innerHTML = '';
 
@@ -2109,18 +2559,21 @@
     }
 
     function downloadAuditJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(auditLogs, null, 2));
+      const logs = auditLogs.length > 0 ? auditLogs : LocalStorageStore.getAuditLogs();
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(logs, null, 2));
       const downloadAnchor = document.createElement('a');
       downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "smartshelf_audit_log.json");
+      downloadAnchor.setAttribute("download", `smartshelf_audit_log_${new Date().toISOString().split('T')[0]}.json`);
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
+      showToast("Audit ledger exported as JSON.");
     }
 
     // Initialize application on load
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('current-date-display').textContent = new Date().toISOString().split('T')[0];
+      await checkBackendConnectivity();
       const initialHash = window.location.hash.replace('#', '') || 'dashboard';
       navigateTo(initialHash);
       syncRegisterPreview();

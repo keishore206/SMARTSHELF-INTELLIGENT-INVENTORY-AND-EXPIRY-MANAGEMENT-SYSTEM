@@ -24,6 +24,7 @@ SmartShelf is an intelligent inventory monitoring, shelf-life analytics, and
 automated expiry alert platform engineered for supermarkets and warehouses.
 
 The platform is merged into ONE single main application:
+- Live Public Hosted Demo: https://keishore206.github.io/SMARTSHELF-INTELLIGENT-INVENTORY-AND-EXPIRY-MANAGEMENT-SYSTEM/
 - Main Application: Google Stitch Enterprise UI
 - Backend: Python with FastAPI (main.py)
 - Database: SQLite (smartshelf/data/smartshelf.db)

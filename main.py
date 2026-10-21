@@ -293,6 +293,9 @@ def seed_database():
 # Serve root index.html from Stitch UI suite
 @app.get("/", tags=["UI"])
 def serve_stitch_ui():
+    root_index = os.path.join(PROJECT_ROOT, "index.html")
+    if os.path.exists(root_index):
+        return FileResponse(root_index)
     index_file = os.path.join(STATIC_DIR, "index.html")
     if os.path.exists(index_file):
         return FileResponse(index_file)

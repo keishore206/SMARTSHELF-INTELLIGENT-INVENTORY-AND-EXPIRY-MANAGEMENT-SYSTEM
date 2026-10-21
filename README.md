@@ -1,11 +1,32 @@
 # SMARTSHELF — Intelligent Inventory and Expiry Management System
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-4285F4?style=for-the-badge&logo=github&logoColor=white)](https://keishore206.github.io/SMARTSHELF-INTELLIGENT-INVENTORY-AND-EXPIRY-MANAGEMENT-SYSTEM/)
 [![Python 3.11](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-WAL%20Mode-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.35+-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Google Stitch UI](https://img.shields.io/badge/Google%20Stitch-Enterprise%20UI-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://stitch.withgoogle.com/)
 [![Pytest](https://img.shields.io/badge/Pytest-Passing%20(9%2F9)-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://pytest.org/)
+
+---
+
+## 🌐 Live Hosted Web Application (GitHub Pages)
+
+Experience the complete enterprise inventory and expiry platform live in your browser — zero installation or setup required:
+
+👉 **[https://keishore206.github.io/SMARTSHELF-INTELLIGENT-INVENTORY-AND-EXPIRY-MANAGEMENT-SYSTEM/](https://keishore206.github.io/SMARTSHELF-INTELLIGENT-INVENTORY-AND-EXPIRY-MANAGEMENT-SYSTEM/)**
+
+| Capability | Cloud Hosted Mode (GitHub Pages) | Local Enterprise Server (`python main.py`) |
+| :--- | :--- | :--- |
+| **Deployment / Access** | Publicly accessible URL on GitHub Pages | Localhost ASGI server on Port 5000 |
+| **Data Engine** | Browser Reactive Persistence (`localStorage`) | ACID SQLite WAL Database (`smartshelf.db`) |
+| **Executive Dashboard & KPIs** | ✅ Real-time valuation, shelf health, categories | ✅ Real-time valuation, shelf health, categories |
+| **Catalog Inspector & Drawer** | ✅ Multi-matrix search, filters, and SKU drawer | ✅ Multi-matrix search, filters, and SKU drawer |
+| **Product Lifecycle (Add/Edit/Delete)** | ✅ Fully functional client-side CRUD | ✅ Parameterised SQL CRUD with CHECK rules |
+| **Expiration Exception Alerts** | ✅ Deterministic expiration horizon engine | ✅ Deterministic expiration horizon engine |
+| **Reports Center (CSV & TXT)** | ✅ Instant in-browser Blob file downloads | ✅ FastAPI streaming endpoint file downloads |
+| **System Governance Audit Log** | ✅ Chronological log with JSON export | ✅ Immutable SQLite audit table + JSON export |
+| **Streamlit Analytics Studio** | 💡 Embedded architecture notice & preview | ✅ Native Python Streamlit runtime (Port 8501) |
 
 ---
 
@@ -62,7 +83,13 @@ SmartShelf operates as a decoupled 3-tier architecture with an integrated second
 
 ## 🚀 Quickstart & How to Run
 
-### Method 1: One-Click Windows Launcher (Recommended)
+### Method 0: Instant Access via GitHub Pages (Zero Installation)
+Launch the cloud version instantly in any web browser without cloning or installing dependencies:
+👉 **[Open SmartShelf on GitHub Pages](https://keishore206.github.io/SMARTSHELF-INTELLIGENT-INVENTORY-AND-EXPIRY-MANAGEMENT-SYSTEM/)**
+
+---
+
+### Method 1: One-Click Windows Launcher (Recommended for Full Local Stack)
 Double-click the included batch launcher:
 ```bat
 run_enterprise.bat

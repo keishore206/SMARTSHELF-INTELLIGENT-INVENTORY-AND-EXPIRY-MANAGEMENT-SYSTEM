@@ -31,3 +31,7 @@ htmlcov/
 Thumbs.db
 .vscode/
 .idea/
+
+# Local course project directories
+p1/
+p2/

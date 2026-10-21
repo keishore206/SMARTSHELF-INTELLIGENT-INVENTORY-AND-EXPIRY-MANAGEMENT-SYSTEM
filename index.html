@@ -1,0 +1,2583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>SmartShelf Enterprise Inventory Platform</title>
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <!-- Inter & JetBrains Mono Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+    .view-panel { display: block; }
+    .view-panel.hidden { display: none !important; }
+  </style>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-primary": "#ffffff",
+            "surface-container-low": "#eff4ff",
+            "tertiary-fixed-dim": "#bec6e0",
+            "primary-container": "#1d4ed8",
+            "surface-dim": "#ccdbf3",
+            "primary": "#0037b0",
+            "surface-container": "#e6eeff",
+            "outline": "#747686",
+            "tertiary": "#3d445a",
+            "surface-container-high": "#dce9ff",
+            "error": "#ba1a1a",
+            "inverse-surface": "#233144",
+            "tertiary-container": "#545c72",
+            "surface-container-highest": "#d5e3fc",
+            "on-surface": "#0d1c2e",
+            "secondary-fixed": "#9cf2e8",
+            "surface-tint": "#2151da",
+            "on-secondary-fixed-variant": "#00504a",
+            "surface-bright": "#f8f9ff",
+            "on-surface-variant": "#434655",
+            "on-secondary-container": "#006f67",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#cdd5ef",
+            "on-background": "#0d1c2e",
+            "inverse-primary": "#b7c4ff",
+            "on-tertiary-fixed": "#131b2e",
+            "surface": "#f8f9ff",
+            "primary-fixed": "#dce1ff",
+            "on-secondary-fixed": "#00201d",
+            "on-primary-fixed": "#001551",
+            "on-tertiary": "#ffffff",
+            "secondary-container": "#99efe5",
+            "inverse-on-surface": "#eaf1ff",
+            "on-tertiary-fixed-variant": "#3f465c",
+            "on-error-container": "#93000a",
+            "secondary-fixed-dim": "#80d5cb",
+            "error-container": "#ffdad6",
+            "on-secondary": "#ffffff",
+            "background": "#f8f9ff",
+            "surface-variant": "#d5e3fc",
+            "secondary": "#006a63",
+            "on-primary-fixed-variant": "#0039b5",
+            "on-error": "#ffffff",
+            "on-primary-container": "#cad3ff",
+            "outline-variant": "#c4c5d7",
+            "primary-fixed-dim": "#b7c4ff",
+            "tertiary-fixed": "#dae2fd"
+          },
+          borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+          spacing: {
+            "space-sm": "0.5rem",
+            gutter: "1.5rem",
+            "space-lg": "1.5rem",
+            margin: "2rem",
+            "gutter-mobile": "1rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "space-xl": "2rem"
+          },
+          fontFamily: {
+            "body-semibold": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-medium": ["Inter"],
+            "caption-regular": ["Inter"],
+            "caption-medium": ["Inter"],
+            "headline-xl-mobile": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-xl": ["Inter"],
+            "badge-label": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "title-sm": ["Inter"],
+            "tabular-data": ["JetBrains Mono", "monospace"],
+            "body-regular": ["Inter"]
+          },
+          fontSize: {
+            "body-semibold": ["14px", { lineHeight: "20px", fontWeight: "600" }],
+            "headline-md": ["18px", { lineHeight: "26px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "body-medium": ["14px", { lineHeight: "20px", fontWeight: "500" }],
+            "caption-regular": ["12px", { lineHeight: "16px", fontWeight: "400" }],
+            "caption-medium": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+            "headline-xl-mobile": ["26px", { lineHeight: "34px", letterSpacing: "-0.015em", fontWeight: "700" }],
+            "headline-lg": ["24px", { lineHeight: "32px", letterSpacing: "-0.015em", fontWeight: "600" }],
+            "headline-xl": ["32px", { lineHeight: "40px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "badge-label": ["11px", { lineHeight: "14px", letterSpacing: "0.05em", fontWeight: "600" }],
+            "headline-lg-mobile": ["20px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "title-sm": ["15px", { lineHeight: "22px", letterSpacing: "-0.005em", fontWeight: "600" }],
+            "tabular-data": ["13px", { lineHeight: "18px", fontWeight: "500" }],
+            "body-regular": ["14px", { lineHeight: "20px", fontWeight: "400" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-surface font-body-regular text-body-regular text-on-surface antialiased">
+
+  <!-- ================= MASTER SIDEBAR ================= -->
+  <aside class="fixed left-0 top-0 h-full w-[260px] bg-inverse-surface border-r border-[#1e293b] z-50 flex flex-col justify-between select-none">
+    <div class="flex flex-col flex-1 overflow-y-auto">
+      <!-- App Brand Logo -->
+      <div class="h-16 px-space-md border-b border-[#1e293b] flex items-center gap-space-sm cursor-pointer" onclick="navigateTo('dashboard')">
+        <div class="w-8 h-8 rounded-lg bg-primary-container text-white flex items-center justify-center font-bold text-lg shadow-sm">
+          <span class="material-symbols-outlined text-[20px]">shelves</span>
+        </div>
+        <div class="flex flex-col min-w-0">
+          <span class="font-headline-md text-title-sm text-white tracking-tight leading-none truncate">SmartShelf</span>
+          <span class="font-caption-regular text-caption-regular text-slate-400 leading-tight mt-0.5 truncate">Enterprise Inventory</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="px-space-sm py-space-md space-y-space-md flex-1" id="sidebar-nav">
+        <!-- Overview Group -->
+        <div class="space-y-space-xs">
+          <div class="px-space-sm pb-1 font-badge-label text-badge-label uppercase text-slate-400 tracking-wider">Overview</div>
+          <a class="nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg transition-colors bg-primary-container text-on-primary font-body-semibold cursor-pointer" data-path="dashboard">
+            <span class="material-symbols-outlined text-[18px]">dashboard</span>
+            <span class="font-body-medium text-body-medium">Dashboard</span>
+          </a>
+        </div>
+
+        <!-- Inventory Group -->
+        <div class="space-y-space-xs">
+          <div class="px-space-sm pb-1 font-badge-label text-badge-label uppercase text-slate-400 tracking-wider">Inventory</div>
+          <a class="nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-slate-800 hover:text-white transition-colors cursor-pointer" data-path="catalog">
+            <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+            <span class="font-body-medium text-body-medium">Inventory Catalog</span>
+          </a>
+          <a class="nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-slate-800 hover:text-white transition-colors cursor-pointer" data-path="register">
+            <span class="material-symbols-outlined text-[18px]">add_box</span>
+            <span class="font-body-medium text-body-medium">Add Product</span>
+          </a>
+          <a class="nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-slate-800 hover:text-white transition-colors cursor-pointer" data-path="edit">
+            <span class="material-symbols-outlined text-[18px]">edit_note</span>
+            <span class="font-body-medium text-body-medium">Edit Product</span>
+          </a>
+        </div>
+
+        <!-- Monitoring Group -->
+        <div class="space-y-space-xs">
+          <div class="px-space-sm pb-1 font-badge-label text-badge-label uppercase text-slate-400 tracking-wider">Monitoring</div>
+          <a class="nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-slate-800 hover:text-white transition-colors cursor-pointer" data-path="alerts">
+            <span class="material-symbols-outlined text-[18px]">warning</span>
+            <span class="font-body-medium text-body-medium">Alerts & Exceptions</span>
+            <span id="sidebar-alert-badge" class="ml-auto px-1.5 py-0.5 rounded-full bg-error text-white text-[10px] font-bold font-tabular-data">0</span>
+          </a>
+          <a class="nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-slate-800 hover:text-white transition-colors cursor-pointer" data-path="reports">
+            <span class="material-symbols-outlined text-[18px]">assessment</span>
+            <span class="font-body-medium text-body-medium">Reports & Export</span>
+          </a>
+        </div>
+
+        <!-- System Group -->
+        <div class="space-y-space-xs">
+          <div class="px-space-sm pb-1 font-badge-label text-badge-label uppercase text-slate-400 tracking-wider">System</div>
+          <a class="nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-slate-800 hover:text-white transition-colors cursor-pointer" data-path="audit">
+            <span class="material-symbols-outlined text-[18px]">manage_history</span>
+            <span class="font-body-medium text-body-medium">System Audit Log</span>
+          </a>
+          <a class="nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-slate-800 hover:text-white transition-colors cursor-pointer" data-path="streamlit">
+            <span class="material-symbols-outlined text-[18px]">analytics</span>
+            <span class="font-body-medium text-body-medium">Streamlit Studio</span>
+            <span class="ml-auto px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 text-[10px] uppercase font-bold">Backup</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Sidebar Footer -->
+    <div class="p-space-md border-t border-[#1e293b] bg-inverse-surface/80">
+      <div class="flex items-center justify-between text-slate-400 font-tabular-data text-caption-regular">
+        <span id="current-date-display">2026-10-21</span>
+        <span class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-badge-label text-badge-label uppercase">v1.2.0 Enterprise</span>
+      </div>
+      <div class="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+        <a href="https://github.com/keishore206/SMARTSHELF-INTELLIGENT-INVENTORY-AND-EXPIRY-MANAGEMENT-SYSTEM" target="_blank" rel="noopener noreferrer" class="hover:text-white flex items-center gap-1 transition-colors">
+          <span class="material-symbols-outlined text-[13px]">code</span>
+          <span>GitHub Repo</span>
+        </a>
+        <button onclick="resetDemoDataPrompt()" class="hover:text-amber-400 transition-colors">Reset Demo</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN CONTENT WRAPPER ================= -->
+  <div class="pl-[260px]">
+    <!-- Master Top Header Bar -->
+    <header class="fixed top-0 left-[260px] right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl border-b border-outline-variant z-40 flex items-center justify-between px-space-lg shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]">
+      <div class="flex items-center gap-space-md flex-1 max-w-xl">
+        <!-- Global Search Input -->
+        <div class="relative w-full max-w-sm">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+          <input id="global-search-input" class="w-full h-[38px] pl-9 pr-space-md bg-surface-container-lowest border border-outline-variant rounded-lg font-body-regular text-body-regular text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all" placeholder="Quick search product name or SKU..." type="text"/>
+        </div>
+        <!-- System Operational Pill -->
+        <div class="hidden lg:flex items-center gap-2">
+          <div id="system-status-pill" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/40 border border-secondary">
+            <span id="system-status-dot" class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+            <span id="system-status-text" class="font-caption-medium text-caption-medium text-on-secondary-container">Checking system...</span>
+          </div>
+          <button id="reset-demo-btn" onclick="resetDemoDataPrompt()" class="hidden text-[11px] px-2 py-1 rounded-md border border-outline-variant text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" title="Reset sample inventory to initial defaults">
+            Reset Demo
+          </button>
+        </div>
+      </div>
+
+      <!-- Header Right Actions -->
+      <div class="flex items-center gap-space-md">
+        <!-- Notifications Bell -->
+        <button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-colors" type="button" onclick="navigateTo('alerts')">
+          <span class="material-symbols-outlined text-[20px]">notifications</span>
+          <span id="header-alert-indicator" class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
+        </button>
+
+        <div class="h-6 w-px bg-outline-variant"></div>
+
+        <!-- Admin Profile -->
+        <div class="flex items-center gap-space-sm pl-1">
+          <div class="w-8 h-8 rounded-full bg-primary-container text-white flex items-center justify-center font-bold text-sm">
+            SS
+          </div>
+          <div class="hidden md:flex flex-col text-left">
+            <span class="font-body-semibold text-body-semibold text-on-surface leading-tight">Warehouse Admin</span>
+            <span class="font-caption-regular text-caption-regular text-on-surface-variant leading-tight">Store Logistics</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="relative pt-16 bg-surface w-full px-space-lg py-space-lg min-h-screen">
+      
+      <!-- ================= SCREEN 1: EXECUTIVE DASHBOARD ================= -->
+      <section id="view-dashboard" class="view-panel">
+        <div class="flex flex-col w-full space-y-space-lg">
+          <!-- Top Operational Action Bar -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+            <div class="flex flex-col">
+              <div class="flex items-center gap-space-xs text-outline font-caption-regular text-caption-regular uppercase tracking-wider">
+                <span>SmartShelf Enterprise</span>
+                <span>/</span>
+                <span class="text-on-surface-variant font-caption-medium text-caption-medium">Store Shelf Operations</span>
+              </div>
+              <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight mt-1">Inventory Dashboard</h1>
+              <p class="font-body-regular text-body-regular text-on-surface-variant mt-0.5">Real-time operational health, shelf-life monitoring, and stock alerts.</p>
+            </div>
+            <div class="flex items-center gap-space-sm self-start md:self-auto">
+              <button onclick="downloadCSV()" class="inline-flex items-center justify-center gap-2 h-[38px] px-space-md rounded-lg bg-surface-container-lowest text-on-surface font-body-medium text-body-medium shadow-sm hover:bg-surface-container transition-all" type="button">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                <span>Quick Export</span>
+              </button>
+              <button onclick="navigateTo('register')" class="inline-flex items-center justify-center gap-2 h-[38px] px-space-md rounded-lg bg-primary-container text-on-primary font-body-medium text-body-medium shadow-sm hover:bg-primary transition-all" type="button">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                <span>Register Product</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Metric Strip (5 Horizontal Cards) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-space-md">
+            <!-- Card 1: Catalog SKUs -->
+            <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between text-on-surface-variant">
+                <span class="font-caption-medium text-caption-medium uppercase tracking-wider text-outline">Catalog SKUs</span>
+                <span class="p-1.5 rounded-lg bg-surface-container-low text-primary">
+                  <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                </span>
+              </div>
+              <div class="mt-space-sm">
+                <div id="kpi-total-skus" class="font-tabular-data text-headline-lg font-headline-lg text-on-surface">12</div>
+                <div class="flex items-center gap-1.5 mt-1 font-caption-medium text-caption-medium text-secondary">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  <span>Active catalog items</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Total Units -->
+            <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between text-on-surface-variant">
+                <span class="font-caption-medium text-caption-medium uppercase tracking-wider text-outline">Total Units</span>
+                <span class="p-1.5 rounded-lg bg-surface-container-low text-primary">
+                  <span class="material-symbols-outlined text-[18px]">shelves</span>
+                </span>
+              </div>
+              <div class="mt-space-sm">
+                <div id="kpi-total-units" class="font-tabular-data text-headline-lg font-headline-lg text-on-surface">377</div>
+                <div class="flex items-center gap-1.5 mt-1 font-caption-regular text-caption-regular text-on-surface-variant">
+                  <span>Physical shelf stock</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Stock Valuation -->
+            <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between text-on-surface-variant">
+                <span class="font-caption-medium text-caption-medium uppercase tracking-wider text-outline">Stock Valuation</span>
+                <span class="p-1.5 rounded-lg bg-secondary-container/30 text-secondary">
+                  <span class="material-symbols-outlined text-[18px]">payments</span>
+                </span>
+              </div>
+              <div class="mt-space-sm">
+                <div id="kpi-total-valuation" class="font-tabular-data text-headline-lg font-headline-lg text-on-surface">Rs 58,490.00</div>
+                <div class="flex items-center gap-1.5 mt-1 font-caption-medium text-caption-medium text-secondary">
+                  <span class="px-1.5 py-0.5 rounded bg-secondary-container/40 text-on-secondary-container font-badge-label text-badge-label font-tabular-data">Verified</span>
+                  <span class="text-on-surface-variant font-caption-regular text-caption-regular">total asset value</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 4: Expired Batches -->
+            <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between text-on-surface-variant">
+                <span class="font-caption-medium text-caption-medium uppercase tracking-wider text-outline">Expired Batches</span>
+                <span class="p-1.5 rounded-lg bg-error-container text-error">
+                  <span class="material-symbols-outlined text-[18px]">event_busy</span>
+                </span>
+              </div>
+              <div class="mt-space-sm">
+                <div class="flex items-baseline gap-2">
+                  <div id="kpi-expired-count" class="font-tabular-data text-headline-xl font-headline-xl text-error">3</div>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-error-container text-error font-badge-label text-badge-label uppercase">Action Required</span>
+                </div>
+                <div class="mt-1 font-caption-regular text-caption-regular text-on-surface-variant">
+                  Past shelf-life date
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 5: Low Stock Items -->
+            <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm flex flex-col justify-between">
+              <div class="flex items-center justify-between text-on-surface-variant">
+                <span class="font-caption-medium text-caption-medium uppercase tracking-wider text-outline">Low Stock Items</span>
+                <span class="p-1.5 rounded-lg bg-surface-container text-primary-container">
+                  <span class="material-symbols-outlined text-[18px]">low_priority</span>
+                </span>
+              </div>
+              <div class="mt-space-sm">
+                <div class="flex items-baseline gap-2">
+                  <div id="kpi-low-stock-count" class="font-tabular-data text-headline-xl font-headline-xl text-[#d97706]">4</div>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] font-badge-label text-badge-label uppercase">Reorder Alert</span>
+                </div>
+                <div class="mt-1 font-caption-regular text-caption-regular text-on-surface-variant">
+                  Below safety threshold
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Operational Alert Banners -->
+          <div class="flex flex-col gap-space-sm">
+            <!-- Critical Banner -->
+            <div id="banner-critical-expired" class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm p-space-md rounded-lg bg-[#fee2e2] text-[#991b1b] shadow-sm">
+              <div class="flex items-start md:items-center gap-space-sm">
+                <span class="p-1 rounded-full bg-error text-white mt-0.5 md:mt-0 flex-shrink-0">
+                  <span class="material-symbols-outlined text-[18px]">priority_high</span>
+                </span>
+                <div class="font-body-medium text-body-medium">
+                  <span class="font-body-semibold text-body-semibold text-[#7f1d1d]">Critical Notice:</span>
+                  <span id="banner-expired-text">Expired inventory batches detected on shelves. Immediate write-off and disposal required.</span>
+                </div>
+              </div>
+              <button onclick="navigateTo('alerts')" class="inline-flex items-center justify-center self-start md:self-auto px-space-md py-1.5 rounded-lg bg-[#991b1b] text-white font-body-semibold text-caption-medium hover:bg-[#7f1d1d] transition-colors whitespace-nowrap shadow-sm" type="button">
+                Review Expired Batches
+              </button>
+            </div>
+
+            <!-- Secondary Warning Banner -->
+            <div id="banner-warning-stock" class="flex flex-col md:flex-row md:items-center justify-between gap-space-sm p-space-md rounded-lg bg-[#fef3c7] text-[#92400e] shadow-sm">
+              <div class="flex items-start md:items-center gap-space-sm">
+                <span class="p-1 rounded-full bg-[#d97706] text-white mt-0.5 md:mt-0 flex-shrink-0">
+                  <span class="material-symbols-outlined text-[18px]">warning</span>
+                </span>
+                <div class="font-body-medium text-body-medium">
+                  <span class="font-body-semibold text-body-semibold text-[#78350f]">Inventory Notice:</span>
+                  <span id="banner-low-stock-text">Products have fallen below minimum safety threshold. Re-order cycle pending.</span>
+                </div>
+              </div>
+              <button onclick="navigateTo('alerts')" class="inline-flex items-center gap-1 font-body-semibold text-caption-medium text-[#78350f] hover:text-[#451a03] underline underline-offset-4 whitespace-nowrap">
+                <span>View Low Stock Items</span>
+                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Analytics Row (50/50 Split Bento) -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-space-md">
+            <!-- Left Card: Units by Category -->
+            <div class="bg-surface-container-lowest rounded-lg p-space-lg shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Units by Category</h2>
+                    <p class="font-caption-regular text-caption-regular text-on-surface-variant mt-0.5">Physical distribution across active merchandise categories</p>
+                  </div>
+                  <span id="category-units-total-badge" class="font-badge-label text-badge-label uppercase px-2 py-0.5 rounded bg-surface-container-low text-primary-container font-tabular-data">377 Units Net</span>
+                </div>
+                <!-- Category Bars Container -->
+                <div id="dashboard-category-bars" class="mt-space-lg space-y-4">
+                  <!-- Populated by JS -->
+                </div>
+              </div>
+              <div class="pt-space-md mt-space-md flex items-center justify-between text-outline font-caption-regular text-caption-regular">
+                <span>Real-time database sync: Active</span>
+                <a onclick="navigateTo('catalog')" class="text-primary hover:underline font-caption-medium cursor-pointer">Catalog details →</a>
+              </div>
+            </div>
+
+            <!-- Right Card: Stock Health Breakdown -->
+            <div class="bg-surface-container-lowest rounded-lg p-space-lg shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Stock Health Breakdown</h2>
+                    <p class="font-caption-regular text-caption-regular text-on-surface-variant mt-0.5">Availability status across all active catalog products</p>
+                  </div>
+                  <span id="health-overall-badge" class="font-badge-label text-badge-label uppercase px-2.5 py-0.5 rounded-full bg-[#dcfce7] text-[#16a34a] font-tabular-data font-body-semibold">Overall: 75% In Stock</span>
+                </div>
+                <!-- Segmented Composite Bar -->
+                <div class="mt-space-lg">
+                  <div class="w-full h-6 rounded-lg bg-surface-container overflow-hidden flex shadow-inner">
+                    <div id="health-bar-instock" class="h-full bg-secondary transition-all" style="width: 66%" title="In Stock"></div>
+                    <div id="health-bar-lowstock" class="h-full bg-[#f59e0b] transition-all" style="width: 25%" title="Low Stock"></div>
+                    <div id="health-bar-outofstock" class="h-full bg-error transition-all" style="width: 9%" title="Out of Stock"></div>
+                  </div>
+                </div>
+                <!-- Detailed Status Cards -->
+                <div class="grid grid-cols-3 gap-space-sm mt-space-lg">
+                  <!-- In Stock -->
+                  <div class="p-space-md rounded-lg bg-surface-container-low flex flex-col justify-between">
+                    <div class="flex items-center gap-1.5 font-caption-medium text-caption-medium text-secondary">
+                      <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                      <span>In Stock</span>
+                    </div>
+                    <div class="mt-space-sm">
+                      <div id="health-card-instock-pct" class="font-tabular-data text-headline-lg font-headline-lg text-on-surface">66%</div>
+                      <div id="health-card-instock-count" class="font-tabular-data font-caption-regular text-caption-regular text-on-surface-variant mt-0.5">8 SKUs</div>
+                    </div>
+                    <div class="mt-space-xs font-caption-regular text-[11px] text-outline">Normal level</div>
+                  </div>
+                  <!-- Low Stock -->
+                  <div class="p-space-md rounded-lg bg-[#fef3c7]/60 flex flex-col justify-between">
+                    <div class="flex items-center gap-1.5 font-caption-medium text-caption-medium text-[#92400e]">
+                      <span class="w-2 h-2 rounded-full bg-[#f59e0b]"></span>
+                      <span>Low Stock</span>
+                    </div>
+                    <div class="mt-space-sm">
+                      <div id="health-card-lowstock-pct" class="font-tabular-data text-headline-lg font-headline-lg text-[#92400e]">25%</div>
+                      <div id="health-card-lowstock-count" class="font-tabular-data font-caption-regular text-caption-regular text-on-surface-variant mt-0.5">3 SKUs</div>
+                    </div>
+                    <div class="mt-space-xs font-caption-regular text-[11px] text-[#92400e]">Threshold hit</div>
+                  </div>
+                  <!-- Out of Stock -->
+                  <div class="p-space-md rounded-lg bg-error-container/60 flex flex-col justify-between">
+                    <div class="flex items-center gap-1.5 font-caption-medium text-caption-medium text-error">
+                      <span class="w-2 h-2 rounded-full bg-error"></span>
+                      <span>Out of Stock</span>
+                    </div>
+                    <div class="mt-space-sm">
+                      <div id="health-card-outofstock-pct" class="font-tabular-data text-headline-lg font-headline-lg text-error">9%</div>
+                      <div id="health-card-outofstock-count" class="font-tabular-data font-caption-regular text-caption-regular text-on-surface-variant mt-0.5">1 SKU</div>
+                    </div>
+                    <div class="mt-space-xs font-caption-regular text-[11px] text-error">Immediate PO</div>
+                  </div>
+                </div>
+              </div>
+              <div class="pt-space-md mt-space-md flex items-center justify-between text-outline font-caption-regular text-caption-regular">
+                <span>Threshold check: Active</span>
+                <a onclick="navigateTo('alerts')" class="text-primary hover:underline font-caption-medium cursor-pointer">View alert details →</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Upcoming Expiration Timeline -->
+          <div class="bg-surface-container-lowest rounded-lg shadow-sm flex flex-col overflow-hidden">
+            <div class="p-space-lg flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+              <div>
+                <div class="flex items-center gap-space-sm">
+                  <h2 class="font-headline-md text-headline-md text-on-surface">Upcoming Shelf Expirations</h2>
+                  <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface font-caption-medium text-caption-medium font-tabular-data">Critical Batches</span>
+                </div>
+                <p class="font-caption-regular text-caption-regular text-on-surface-variant mt-0.5">Perishable inventory requiring priority FEFO rotation or promotional markdown.</p>
+              </div>
+              <a onclick="navigateTo('alerts')" class="inline-flex items-center gap-1 font-body-semibold text-body-medium text-primary hover:text-primary-container transition-colors cursor-pointer">
+                <span>Inspect All Alerts</span>
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </a>
+            </div>
+            <!-- Data Table Container -->
+            <div class="overflow-x-auto w-full">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="h-10 bg-surface-container-low text-on-surface-variant font-caption-medium text-caption-medium uppercase tracking-wider">
+                    <th class="px-space-lg py-2">SKU ID</th>
+                    <th class="px-space-md py-2">Product Name</th>
+                    <th class="px-space-md py-2">Category</th>
+                    <th class="px-space-md py-2 text-right">Units On Hand</th>
+                    <th class="px-space-md py-2 text-right">Unit Price</th>
+                    <th class="px-space-md py-2">Expiry Date</th>
+                    <th class="px-space-md py-2">Days Remaining</th>
+                    <th class="px-space-lg py-2 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-expirations-table" class="divide-y divide-surface-container font-body-regular text-body-regular text-on-surface">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= SCREEN 2: INVENTORY CATALOG & INSPECTOR ================= -->
+      <section id="view-catalog" class="view-panel hidden">
+        <div class="flex flex-col w-full">
+          <!-- Page Header -->
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-space-md mb-space-lg">
+            <div>
+              <div class="flex items-center gap-space-xs text-on-surface-variant font-caption-medium text-caption-medium mb-1">
+                <span>Catalog Management</span>
+                <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                <span class="text-primary-container font-caption-medium">Live Inventory</span>
+              </div>
+              <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Inventory Catalog</h1>
+              <p class="font-body-regular text-body-regular text-on-surface-variant mt-0.5">
+                Search, filter, and inspect detailed inventory attributes and shelf-life metrics.
+              </p>
+            </div>
+            <div class="flex items-center gap-space-sm self-start md:self-auto">
+              <button onclick="downloadCSV()" class="h-[38px] px-space-md rounded-lg bg-surface-container-lowest text-secondary shadow-sm hover:bg-secondary-container/20 flex items-center gap-space-xs font-body-medium text-body-medium transition-colors" type="button">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                <span>Export CSV</span>
+              </button>
+              <button onclick="navigateTo('register')" class="h-[38px] px-space-md rounded-lg bg-primary-container text-on-primary hover:bg-primary shadow-sm flex items-center gap-space-xs font-body-semibold text-body-semibold transition-colors" type="button">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                <span>Add New SKU</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Multi-Filter Matrix Toolbar -->
+          <div class="w-full bg-surface-container-lowest rounded-xl p-space-sm shadow-sm mb-space-lg flex flex-col xl:flex-row items-center gap-space-sm">
+            <!-- Search Query Segment -->
+            <div class="relative w-full xl:w-80 flex-shrink-0">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+              <input id="catalog-search-input" oninput="applyCatalogFilters()" class="w-full h-[38px] pl-9 pr-3 rounded-lg bg-surface-container-low text-on-surface placeholder:text-outline font-body-regular text-body-regular focus:outline-none focus:ring-2 focus:ring-primary-container/25 transition-all" placeholder="Search product name or SKU..." type="text"/>
+            </div>
+
+            <!-- Filter Dropdowns -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-space-xs w-full flex-1">
+              <!-- Category Filter -->
+              <div class="relative">
+                <select id="catalog-filter-category" onchange="applyCatalogFilters()" class="w-full h-[38px] appearance-none pl-3 pr-8 rounded-lg bg-surface-container-low text-on-surface font-body-medium text-body-medium focus:outline-none focus:ring-2 focus:ring-primary-container/20 cursor-pointer">
+                  <option value="All">All Categories</option>
+                  <option value="Dairy & Refrigerated">Dairy & Refrigerated</option>
+                  <option value="Bakery">Bakery</option>
+                  <option value="Beverages">Beverages</option>
+                  <option value="Produce">Produce</option>
+                  <option value="Grocery">Grocery</option>
+                  <option value="Household">Household</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[18px]">expand_more</span>
+              </div>
+
+              <!-- Stock Status Filter -->
+              <div class="relative">
+                <select id="catalog-filter-stock" onchange="applyCatalogFilters()" class="w-full h-[38px] appearance-none pl-3 pr-8 rounded-lg bg-surface-container-low text-on-surface font-body-medium text-body-medium focus:outline-none focus:ring-2 focus:ring-primary-container/20 cursor-pointer">
+                  <option value="All">All Stock Levels</option>
+                  <option value="In Stock">In Stock</option>
+                  <option value="Low Stock">Low Stock</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[18px]">expand_more</span>
+              </div>
+
+              <!-- Expiry Filter -->
+              <div class="relative">
+                <select id="catalog-filter-expiry" onchange="applyCatalogFilters()" class="w-full h-[38px] appearance-none pl-3 pr-8 rounded-lg bg-surface-container-low text-on-surface font-body-medium text-body-medium focus:outline-none focus:ring-2 focus:ring-primary-container/20 cursor-pointer">
+                  <option value="All">All Expiry Lifecycles</option>
+                  <option value="Expiring Soon">Expiring Soon (≤ 7 days)</option>
+                  <option value="Expired">Critical / Expired</option>
+                  <option value="OK">Stable (OK)</option>
+                  <option value="N/A">Non-Perishable (N/A)</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[18px]">expand_more</span>
+              </div>
+
+              <!-- Reset Filters -->
+              <div class="flex items-center">
+                <button onclick="resetCatalogFilters()" class="w-full h-[38px] px-3 rounded-lg bg-surface-container-low hover:bg-surface-container text-on-surface-variant flex items-center justify-center gap-1 font-caption-medium text-caption-medium transition-colors" type="button">
+                  <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                  <span>Reset Filters</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Split Layout: Table (left) + Inspector Drawer (right) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+            <!-- Left Table (col-span-8) -->
+            <section class="lg:col-span-8 flex flex-col bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+              <div class="h-12 px-space-md bg-surface-container-lowest flex items-center justify-between border-b border-surface-container">
+                <div class="flex items-center gap-space-sm">
+                  <span id="catalog-items-count-label" class="font-tabular-data text-caption-medium text-on-surface-variant">
+                    Displaying 12 of 12 catalog products
+                  </span>
+                </div>
+                <div class="flex items-center gap-space-xs text-caption-medium text-on-surface-variant">
+                  <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                  <span>Database Synced</span>
+                </div>
+              </div>
+
+              <!-- Dense Table Grid -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-surface-container-low text-on-surface-variant font-caption-medium text-caption-medium h-10 select-none">
+                      <th class="px-space-sm tracking-wider uppercase font-badge-label text-badge-label">SKU</th>
+                      <th class="px-space-sm tracking-wider uppercase font-badge-label text-badge-label">Product Name</th>
+                      <th class="px-space-sm tracking-wider uppercase font-badge-label text-badge-label">Category</th>
+                      <th class="px-space-sm text-right tracking-wider uppercase font-badge-label text-badge-label">Stock Units</th>
+                      <th class="px-space-sm text-right tracking-wider uppercase font-badge-label text-badge-label">Unit Price</th>
+                      <th class="px-space-sm tracking-wider uppercase font-badge-label text-badge-label">Expiry Date</th>
+                      <th class="px-space-sm tracking-wider uppercase font-badge-label text-badge-label text-center">Stock Status</th>
+                      <th class="px-space-sm tracking-wider uppercase font-badge-label text-badge-label text-center">Expiry Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="catalog-table-body" class="divide-y divide-surface-container-low font-body-regular text-body-regular text-on-surface">
+                    <!-- Populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- Right Inspector Drawer (col-span-4) -->
+            <aside class="lg:col-span-4 flex flex-col gap-space-md sticky top-20">
+              <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-md flex flex-col">
+                <div class="flex items-start justify-between pb-space-sm border-b border-surface-container-low mb-space-md">
+                  <div>
+                    <div class="flex items-center gap-1.5 text-secondary font-caption-medium text-caption-medium uppercase tracking-wider mb-1">
+                      <span class="material-symbols-outlined text-[16px]">tune</span>
+                      <span>Product Inspector</span>
+                    </div>
+                    <h2 class="font-headline-md text-headline-md text-on-surface leading-tight">
+                      Item Specifications
+                    </h2>
+                  </div>
+                  <span id="inspector-sku-badge" class="px-2 py-1 rounded-full bg-surface-container text-primary-container font-badge-label text-badge-label uppercase">
+                    SKU #1
+                  </span>
+                </div>
+
+                <!-- Product Summary Card -->
+                <div class="flex items-center gap-space-md p-space-sm bg-surface-container-low rounded-lg mb-space-md">
+                  <div class="w-14 h-14 rounded-lg bg-surface-container flex items-center justify-center text-primary-container shrink-0 shadow-sm">
+                    <span class="material-symbols-outlined text-[28px]">inventory</span>
+                  </div>
+                  <div class="flex flex-col min-w-0">
+                    <span id="inspector-name" class="font-title-sm text-title-sm text-on-surface font-headline-md truncate">Whole Milk 1L</span>
+                    <span id="inspector-category" class="font-caption-regular text-caption-regular text-on-surface-variant">Dairy & Refrigerated</span>
+                    <div id="inspector-expiry-summary" class="mt-1 flex items-center gap-1.5 font-tabular-data text-caption-medium text-[#d97706]">
+                      <span class="material-symbols-outlined text-[14px]">timer</span>
+                      <span>Expires in 3 days</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Specification Grid -->
+                <div class="grid grid-cols-2 gap-x-space-md gap-y-3 pb-space-md border-b border-surface-container-low text-left">
+                  <div class="flex flex-col">
+                    <span class="font-caption-regular text-caption-regular text-on-surface-variant">Internal SKU ID</span>
+                    <span id="inspector-id" class="font-tabular-data text-body-medium font-body-semibold text-on-surface">#1</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="font-caption-regular text-caption-regular text-on-surface-variant">Category</span>
+                    <span id="inspector-cat-text" class="font-body-medium text-body-medium text-on-surface truncate">Dairy</span>
+                  </div>
+
+                  <!-- Stock Volume vs Threshold -->
+                  <div class="flex flex-col col-span-2 p-space-xs bg-surface-container-low/60 rounded">
+                    <div class="flex justify-between items-center mb-1">
+                      <span class="font-caption-regular text-caption-regular text-on-surface-variant">Stock vs Minimum Threshold</span>
+                      <span id="inspector-stock-ratio" class="font-tabular-data text-caption-medium text-on-surface font-body-semibold">42 / 15 Units</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden">
+                      <div id="inspector-progress-bar" class="h-full bg-secondary" style="width: 75%;"></div>
+                    </div>
+                    <span id="inspector-threshold-note" class="font-caption-regular text-[11px] text-on-surface-variant mt-1">Minimum alert threshold: 15 units</span>
+                  </div>
+
+                  <div class="flex flex-col">
+                    <span class="font-caption-regular text-caption-regular text-on-surface-variant">Unit Price</span>
+                    <span id="inspector-unit-price" class="font-tabular-data text-body-medium font-body-semibold text-on-surface">Rs 32.00</span>
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="font-caption-regular text-caption-regular text-on-surface-variant">Total Valuation</span>
+                    <span id="inspector-valuation" class="font-tabular-data text-body-medium font-body-semibold text-primary-container">Rs 1,344.00</span>
+                  </div>
+
+                  <div class="flex flex-col col-span-2">
+                    <span class="font-caption-regular text-caption-regular text-on-surface-variant">Expiry Date</span>
+                    <div class="flex items-center justify-between mt-0.5">
+                      <span id="inspector-expiry-date" class="font-tabular-data text-caption-medium text-on-surface">2026-10-20</span>
+                      <span id="inspector-status-badge" class="px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#d97706] font-badge-label text-badge-label uppercase">Expiring Soon</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Action Triggers -->
+                <div class="pt-space-md flex flex-col gap-space-xs">
+                  <button onclick="editCurrentInspectedProduct()" class="w-full h-[38px] rounded-lg bg-primary-container text-on-primary hover:bg-primary shadow-sm flex items-center justify-center gap-space-xs font-body-semibold text-body-semibold transition-colors" type="button">
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                    <span>Edit Product Record</span>
+                  </button>
+                  <button onclick="promptDeleteCurrentProduct()" class="w-full h-[38px] rounded-lg bg-surface-container-lowest text-error hover:bg-error-container/40 flex items-center justify-center gap-space-xs font-body-medium text-body-medium transition-colors border border-error/20" type="button">
+                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                    <span>Delete Product</span>
+                  </button>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= SCREEN 3: REGISTER NEW PRODUCT ================= -->
+      <section id="view-register" class="view-panel hidden">
+        <div class="flex flex-col w-full">
+          <!-- Page Header Area -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-lg">
+            <div class="flex flex-col gap-0.5">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-badge-label text-badge-label uppercase tracking-wider">Catalog Ingestion</span>
+                <span class="text-outline text-caption-regular font-caption-regular">Batch Protocol: GS1-Compliant</span>
+              </div>
+              <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Register New Product</h1>
+              <p class="font-body-regular text-body-regular text-on-surface-variant">Enter product metadata, stock counts, valuation, and shelf life parameters.</p>
+            </div>
+            <div class="flex items-center gap-space-sm self-start md:self-auto">
+              <button onclick="resetRegisterForm()" class="h-[38px] px-space-md rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body-medium text-body-medium transition-colors flex items-center gap-1.5 shadow-sm" type="button">
+                <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                <span>Reset Defaults</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Split Architecture (Form left, Live Preview right) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+            <!-- Form Controls (col-span-7) -->
+            <div class="lg:col-span-7 flex flex-col gap-space-lg">
+              <!-- Section 1: Product Details -->
+              <section class="bg-surface-container-lowest rounded-lg p-space-lg shadow-sm flex flex-col gap-space-md">
+                <div class="flex items-center justify-between pb-space-xs border-b border-surface-container-low">
+                  <div class="flex items-center gap-2">
+                    <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary-container text-on-primary font-tabular-data text-caption-medium">01</span>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Product Identity</h2>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-badge-label text-badge-label uppercase">Required Fields</span>
+                </div>
+
+                <!-- Product Name -->
+                <div class="flex flex-col gap-1.5">
+                  <div class="flex items-center justify-between">
+                    <label class="font-body-medium text-body-medium text-on-surface" for="reg-name">Product Name</label>
+                    <span class="text-error font-caption-medium text-caption-medium">* Required</span>
+                  </div>
+                  <input id="reg-name" oninput="syncRegisterPreview()" class="w-full h-[38px] px-3 bg-surface-container-lowest text-on-surface border border-outline-variant rounded-lg font-body-regular text-body-regular focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all" placeholder="e.g. Organic Almond Milk 1L" type="text" value="Arabica Roast Coffee Beans 500g"/>
+                  <span class="font-caption-regular text-caption-regular text-outline">Full trade name including packaging weight or volume denomination.</span>
+                </div>
+
+                <!-- Category -->
+                <div class="flex flex-col gap-1.5 pt-1">
+                  <label class="font-body-medium text-body-medium text-on-surface">Category</label>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <select id="reg-category" onchange="syncRegisterCategory(this.value)" class="h-[38px] px-3 bg-surface-container-lowest text-on-surface border border-outline-variant rounded-lg font-body-regular text-body-regular focus:outline-none focus:border-primary-container cursor-pointer">
+                      <option value="Beverages">Beverages</option>
+                      <option value="Dairy & Refrigerated">Dairy & Refrigerated</option>
+                      <option value="Bakery">Bakery</option>
+                      <option value="Produce">Produce</option>
+                      <option value="Grocery">Grocery</option>
+                      <option value="Household">Household</option>
+                      <option value="__custom__">+ Custom Category...</option>
+                    </select>
+                    <input id="reg-custom-category" oninput="syncRegisterPreview()" class="hidden h-[38px] px-3 bg-surface-container-lowest text-on-surface border border-outline-variant rounded-lg font-body-regular text-body-regular focus:outline-none focus:border-primary-container" placeholder="Enter custom category name..." type="text"/>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Section 2: Inventory & Pricing -->
+              <section class="bg-surface-container-lowest rounded-lg p-space-lg shadow-sm flex flex-col gap-space-md">
+                <div class="flex items-center justify-between pb-space-xs border-b border-surface-container-low">
+                  <div class="flex items-center gap-2">
+                    <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary-container text-on-primary font-tabular-data text-caption-medium">02</span>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Inventory & Pricing</h2>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-badge-label text-badge-label uppercase">Valuation Engine</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+                  <!-- Quantity -->
+                  <div class="flex flex-col gap-1.5">
+                    <label class="font-body-medium text-body-medium text-on-surface" for="reg-qty">Quantity in Stock</label>
+                    <input id="reg-qty" oninput="syncRegisterPreview()" class="w-full h-[38px] px-3 font-tabular-data text-on-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container" min="0" type="number" value="25"/>
+                    <span class="font-caption-regular text-caption-regular text-outline">Warehouse physical units available.</span>
+                  </div>
+
+                  <!-- Unit Price -->
+                  <div class="flex flex-col gap-1.5">
+                    <label class="font-body-medium text-body-medium text-on-surface" for="reg-price">Unit Price (Rs)</label>
+                    <div class="relative flex items-center">
+                      <span class="absolute left-3 font-body-semibold text-outline">Rs</span>
+                      <input id="reg-price" oninput="syncRegisterPreview()" class="w-full h-[38px] pl-10 pr-3 font-tabular-data text-on-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container" min="0" step="0.5" type="number" value="380.00"/>
+                    </div>
+                    <span class="font-caption-regular text-caption-regular text-outline">Retail / shelf sale price per unit.</span>
+                  </div>
+                </div>
+
+                <!-- Valuation Card -->
+                <div class="p-space-md rounded-lg bg-surface-container-low flex items-center justify-between">
+                  <div class="flex items-center gap-space-sm">
+                    <div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="font-caption-medium text-caption-medium text-on-surface-variant uppercase tracking-wider">Calculated Batch Valuation</span>
+                      <span id="reg-calc-formula" class="font-caption-regular text-caption-regular text-outline">25 units × Rs 380.00</span>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <div id="reg-calc-valuation" class="font-tabular-data text-headline-md text-primary font-headline-md">Rs 9,500.00</div>
+                    <span class="font-badge-label text-badge-label uppercase text-secondary">Asset Ledger Ready</span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Section 3: Lifecycle & Thresholds -->
+              <section class="bg-surface-container-lowest rounded-lg p-space-lg shadow-sm flex flex-col gap-space-md">
+                <div class="flex items-center justify-between pb-space-xs border-b border-surface-container-low">
+                  <div class="flex items-center gap-2">
+                    <span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary-container text-on-primary font-tabular-data text-caption-medium">03</span>
+                    <h2 class="font-headline-md text-headline-md text-on-surface">Lifecycle & Alerts</h2>
+                  </div>
+                  <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-badge-label text-badge-label uppercase">Risk Controls</span>
+                </div>
+
+                <!-- Expiry Toggle Checkbox -->
+                <div class="flex items-center justify-between p-3 rounded-lg bg-surface-container">
+                  <div class="flex flex-col">
+                    <span class="font-body-medium text-body-medium text-on-surface">Perishable Product (Has Expiry Date)</span>
+                    <span class="font-caption-regular text-caption-regular text-on-surface-variant">Activate automated 7-day expiration monitoring.</span>
+                  </div>
+                  <input id="reg-has-expiry" onchange="toggleRegisterExpiry()" checked class="w-5 h-5 accent-primary-container rounded cursor-pointer" type="checkbox"/>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md pt-1">
+                  <!-- Expiry Date Picker -->
+                  <div id="reg-expiry-wrapper" class="flex flex-col gap-1.5">
+                    <label class="font-body-medium text-body-medium text-on-surface" for="reg-expiry-date">Expiry Date</label>
+                    <input id="reg-expiry-date" onchange="syncRegisterPreview()" class="w-full h-[38px] px-3 bg-surface-container-lowest text-on-surface border border-outline-variant rounded-lg font-tabular-data focus:outline-none focus:border-primary-container" type="date" value="2027-04-30"/>
+                    <span class="font-caption-regular text-caption-regular text-outline">Target shelf-life end date.</span>
+                  </div>
+
+                  <!-- Minimum Stock Alert Threshold -->
+                  <div class="flex flex-col gap-1.5">
+                    <label class="font-body-medium text-body-medium text-on-surface" for="reg-min-stock">Minimum Stock Alert Threshold</label>
+                    <input id="reg-min-stock" oninput="syncRegisterPreview()" class="w-full h-[38px] px-3 font-tabular-data text-on-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container" min="0" type="number" value="8"/>
+                    <span class="font-caption-regular text-caption-regular text-outline">Low stock warning triggers at or below this count.</span>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Action Footer -->
+              <div class="flex items-center justify-end gap-space-md pt-space-xs pb-space-lg">
+                <button onclick="resetRegisterForm()" class="h-[38px] px-space-md rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body-medium text-body-medium transition-colors" type="button">
+                  Cancel / Reset
+                </button>
+                <button onclick="submitNewProduct()" class="h-[38px] px-space-lg rounded-lg bg-primary-container hover:bg-primary text-on-primary font-body-medium text-body-medium transition-colors flex items-center gap-2 shadow-sm" type="button">
+                  <span class="material-symbols-outlined text-[18px]">check</span>
+                  <span>Save & Register Product</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Preview Card (col-span-5) -->
+            <div class="lg:col-span-5 sticky top-20 flex flex-col gap-space-md">
+              <div class="bg-surface-container-lowest rounded-lg p-space-lg shadow-sm flex flex-col gap-space-md relative overflow-hidden">
+                <div class="absolute top-0 left-0 right-0 h-1 bg-primary"></div>
+                <div class="flex items-center justify-between">
+                  <span class="font-badge-label text-badge-label uppercase text-primary tracking-wider">Live System Sync</span>
+                  <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-badge-label text-badge-label">
+                    <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+                    <span>SYNCHRONIZED</span>
+                  </div>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Real-Time Card Preview</h3>
+                <p class="font-caption-regular text-caption-regular text-on-surface-variant">Live visual preview of how this product will be recorded and rendered in the catalog.</p>
+
+                <!-- Preview Card Component -->
+                <div class="bg-surface-container-low rounded-xl p-space-md border border-outline-variant/60 flex flex-col gap-space-sm">
+                  <div class="flex items-center justify-between">
+                    <span id="preview-category-badge" class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface font-badge-label text-badge-label uppercase">Beverages</span>
+                    <span id="preview-stock-badge" class="px-2.5 py-1 rounded-full bg-[#dcfce7] text-[#16a34a] font-badge-label text-badge-label uppercase">In Stock</span>
+                  </div>
+                  <div>
+                    <h4 id="preview-title" class="font-headline-md text-headline-md text-on-surface">Arabica Roast Coffee Beans 500g</h4>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span id="preview-price-text" class="font-tabular-data text-body-semibold text-primary font-body-semibold">Rs 380.00 / unit</span>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 p-space-sm bg-surface-container-lowest rounded-lg">
+                    <div>
+                      <span class="font-caption-regular text-outline uppercase tracking-wider text-[11px]">Units</span>
+                      <div id="preview-units-text" class="font-tabular-data font-body-semibold text-on-surface">25 units</div>
+                    </div>
+                    <div>
+                      <span class="font-caption-regular text-outline uppercase tracking-wider text-[11px]">Batch Valuation</span>
+                      <div id="preview-val-text" class="font-tabular-data font-body-semibold text-primary">Rs 9,500.00</div>
+                    </div>
+                  </div>
+                  <div id="preview-expiry-row" class="flex items-center justify-between text-caption-regular text-on-surface-variant pt-1 border-t border-surface-container">
+                    <span>Expiry Horizon:</span>
+                    <span id="preview-expiry-text" class="font-tabular-data font-semibold text-secondary">2027-04-30</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= SCREEN 4: EDIT PRODUCT & LIFECYCLE MANAGER ================= -->
+      <section id="view-edit" class="view-panel hidden">
+        <div class="flex flex-col w-full gap-space-lg">
+          <!-- Operational Header -->
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-tabular-data text-caption-regular uppercase text-primary tracking-wider font-semibold">SKU MGR // LIFECYCLE</span>
+                <span class="text-outline-variant">•</span>
+                <span class="font-caption-medium text-caption-medium text-secondary">SQLite Cluster Synced</span>
+              </div>
+              <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Edit Product Record</h1>
+              <p class="font-body-regular text-body-regular text-on-surface-variant mt-0.5">Update stock counts, unit pricing, categories, and lifecycle dates for existing items.</p>
+            </div>
+            <div class="flex items-center gap-space-sm bg-surface-container-lowest px-space-md py-2 rounded-lg shadow-sm">
+              <span class="material-symbols-outlined text-outline text-[18px]">verified_user</span>
+              <span class="font-caption-medium text-caption-medium text-on-surface-variant">Audit Trail:</span>
+              <span class="font-tabular-data text-caption-medium text-primary-container font-semibold">ACTIVE</span>
+            </div>
+          </div>
+
+          <!-- Product Selector Command Bar -->
+          <div class="w-full bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+            <div class="flex flex-1 items-center gap-space-md min-w-0">
+              <div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center shrink-0 text-primary-container">
+                <span class="material-symbols-outlined text-[22px]">swap_horiz</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <label class="block font-caption-regular text-caption-regular text-outline uppercase tracking-wider mb-1" for="edit-product-select">Select Product to Modify</label>
+                <div class="relative">
+                  <select id="edit-product-select" onchange="onEditProductSelected(this.value)" class="w-full h-[38px] pl-3 pr-9 bg-surface font-body-medium text-body-medium text-on-surface rounded-lg border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary-container/20 transition-all cursor-pointer">
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Edit Form Card -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+            <div class="lg:col-span-8 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-md">
+              <div class="flex items-center justify-between pb-space-sm border-b border-surface-container-low">
+                <div class="flex items-center gap-space-sm">
+                  <span class="material-symbols-outlined text-primary-container text-[20px]">tune</span>
+                  <h2 class="font-headline-md text-headline-md text-on-surface">Update Parameters</h2>
+                </div>
+                <span id="edit-id-badge" class="font-badge-label text-badge-label uppercase px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed tracking-wider">SKU #1</span>
+              </div>
+
+              <!-- Product Name -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-body-medium text-body-medium text-on-surface" for="edit-name">Product Name</label>
+                <input id="edit-name" class="w-full h-[38px] px-3 font-body-regular text-on-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container" type="text"/>
+              </div>
+
+              <!-- Category -->
+              <div class="flex flex-col gap-1.5">
+                <label class="font-body-medium text-body-medium text-on-surface" for="edit-category">Category</label>
+                <input id="edit-category" class="w-full h-[38px] px-3 font-body-regular text-on-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container" type="text"/>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+                <!-- Quantity -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="font-body-medium text-body-medium text-on-surface" for="edit-qty">Quantity in Stock</label>
+                  <input id="edit-qty" class="w-full h-[38px] px-3 font-tabular-data text-on-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container" min="0" type="number"/>
+                </div>
+
+                <!-- Unit Price -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="font-body-medium text-body-medium text-on-surface" for="edit-price">Unit Price (Rs)</label>
+                  <input id="edit-price" class="w-full h-[38px] px-3 font-tabular-data text-on-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container" min="0" step="0.5" type="number"/>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+                <!-- Expiry Date -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="font-body-medium text-body-medium text-on-surface" for="edit-expiry-date">Expiry Date (Leave empty if non-perishable)</label>
+                  <input id="edit-expiry-date" class="w-full h-[38px] px-3 font-tabular-data text-on-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container" type="date"/>
+                </div>
+
+                <!-- Min Stock Threshold -->
+                <div class="flex flex-col gap-1.5">
+                  <label class="font-body-medium text-body-medium text-on-surface" for="edit-min-stock">Min Stock Threshold</label>
+                  <input id="edit-min-stock" class="w-full h-[38px] px-3 font-tabular-data text-on-surface border border-outline-variant rounded-lg focus:outline-none focus:border-primary-container" min="0" type="number"/>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-end gap-space-md pt-space-sm border-t border-surface-container-low">
+                <button onclick="navigateTo('catalog')" class="h-[38px] px-space-md rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body-medium text-body-medium transition-colors" type="button">
+                  Cancel
+                </button>
+                <button onclick="submitEditProduct()" class="h-[38px] px-space-lg rounded-lg bg-primary-container hover:bg-primary text-on-primary font-body-medium text-body-medium transition-colors flex items-center gap-2 shadow-sm" type="button">
+                  <span class="material-symbols-outlined text-[18px]">save</span>
+                  <span>Save Changes</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Guidance Card (col-span-4) -->
+            <div class="lg:col-span-4 flex flex-col gap-space-md">
+              <div class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm border border-outline-variant/50">
+                <div class="flex items-center gap-2 mb-2 text-primary">
+                  <span class="material-symbols-outlined text-[20px]">info</span>
+                  <span class="font-body-semibold text-body-semibold text-on-surface">Audit Compliance</span>
+                </div>
+                <p class="font-caption-regular text-caption-regular text-on-surface-variant leading-relaxed">
+                  Every edit performed on this product record will automatically generate an immutable entry in the System Audit Log with the exact timestamp and updated parameters.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= SCREEN 5: ALERTS & EXCEPTIONS HUB ================= -->
+      <section id="view-alerts" class="view-panel hidden">
+        <div class="flex flex-col w-full">
+          <!-- Header -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md mb-space-xl">
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-tabular-data text-caption-regular uppercase tracking-widest text-on-surface-variant font-medium">SYS.MONITOR // EXCEPTION_DISPATCH</span>
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+              </div>
+              <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Alerts & Exceptions</h1>
+              <p class="font-body-regular text-body-regular text-on-surface-variant mt-0.5">
+                Monitor critical inventory risks: expired batches, impending shelf expirations, and stock shortages.
+              </p>
+            </div>
+            <div class="flex items-center gap-space-sm self-start md:self-auto">
+              <button onclick="downloadCSV()" class="h-[38px] px-space-md bg-secondary hover:bg-on-secondary-container text-on-secondary font-body-medium text-body-medium rounded-lg shadow-sm transition-all flex items-center gap-2" type="button">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                <span>Export Alert Report</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bento Risk Trio -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg mb-space-xl">
+            <!-- Card 1: Expired Stock -->
+            <div class="relative bg-surface-container-lowest rounded-xl p-space-lg shadow-sm overflow-hidden flex flex-col justify-between">
+              <div class="absolute top-0 left-0 right-0 h-1 bg-error"></div>
+              <div class="flex items-start justify-between mb-space-md">
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-1.5 mb-1">
+                    <span class="material-symbols-outlined text-error text-[18px]">dangerous</span>
+                    <span class="font-caption-medium text-caption-medium uppercase tracking-wider text-error">Critical Discrepancy</span>
+                  </div>
+                  <h2 class="font-headline-md text-headline-md text-on-surface">Expired Stock</h2>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-badge-label text-badge-label uppercase">
+                  Immediate Action Required
+                </span>
+              </div>
+              <div class="flex items-baseline justify-between mt-space-sm pt-space-xs">
+                <div>
+                  <span id="alerts-expired-batches" class="font-headline-xl text-headline-xl text-on-surface tracking-tight">3 Batches</span>
+                  <p class="font-tabular-data text-caption-medium text-error mt-1 flex items-center gap-1">
+                    <span class="font-body-regular text-body-regular text-on-surface-variant">Est. write-off:</span>
+                    <span id="alerts-expired-valuation" class="font-bold">Rs 4,120.00</span>
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-error-container/60 flex items-center justify-center">
+                  <span class="material-symbols-outlined text-error text-[24px]">event_busy</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Expiring Soon -->
+            <div class="relative bg-surface-container-lowest rounded-xl p-space-lg shadow-sm overflow-hidden flex flex-col justify-between">
+              <div class="absolute top-0 left-0 right-0 h-1 bg-[#f59e0b]"></div>
+              <div class="flex items-start justify-between mb-space-md">
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-1.5 mb-1">
+                    <span class="material-symbols-outlined text-[#d97706] text-[18px]">timer</span>
+                    <span class="font-caption-medium text-caption-medium uppercase tracking-wider text-[#d97706]">Impending Expiration</span>
+                  </div>
+                  <h2 class="font-headline-md text-headline-md text-on-surface">Expiring Soon (≤ 7 Days)</h2>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] font-badge-label text-badge-label uppercase">
+                  Markdown Target
+                </span>
+              </div>
+              <div class="flex items-baseline justify-between mt-space-sm pt-space-xs">
+                <div>
+                  <span id="alerts-expiring-soon-batches" class="font-headline-xl text-headline-xl text-on-surface tracking-tight">4 Batches</span>
+                  <p class="font-tabular-data text-caption-medium text-[#d97706] mt-1 flex items-center gap-1">
+                    <span>Priority rotation candidate</span>
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-[#fef3c7] flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[#d97706] text-[24px]">schedule</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: Stock Depletion -->
+            <div class="relative bg-surface-container-lowest rounded-xl p-space-lg shadow-sm overflow-hidden flex flex-col justify-between">
+              <div class="absolute top-0 left-0 right-0 h-1 bg-primary-container"></div>
+              <div class="flex items-start justify-between mb-space-md">
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-1.5 mb-1">
+                    <span class="material-symbols-outlined text-primary text-[18px]">low_priority</span>
+                    <span class="font-caption-medium text-caption-medium uppercase tracking-wider text-primary">Safety Threshold</span>
+                  </div>
+                  <h2 class="font-headline-md text-headline-md text-on-surface">Low & Depleted Stock</h2>
+                </div>
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container text-primary-container font-badge-label text-badge-label uppercase">
+                  Reorder Required
+                </span>
+              </div>
+              <div class="flex items-baseline justify-between mt-space-sm pt-space-xs">
+                <div>
+                  <span id="alerts-low-stock-count" class="font-headline-xl text-headline-xl text-on-surface tracking-tight">4 SKUs</span>
+                  <p class="font-tabular-data text-caption-medium text-on-surface-variant mt-1">
+                    Quantity below minimum threshold
+                  </p>
+                </div>
+                <div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center">
+                  <span class="material-symbols-outlined text-primary text-[24px]">inventory_2</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section: Critical Expired Batches Table -->
+          <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg mb-space-lg">
+            <div class="flex items-center justify-between mb-space-md">
+              <div class="flex items-center gap-2">
+                <span class="p-1 rounded bg-error text-white flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[16px]">dangerous</span>
+                </span>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Expired Stock Batches (Must Dispose)</h3>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="h-10 bg-surface-container-low text-on-surface-variant font-caption-medium text-caption-medium uppercase">
+                    <th class="px-space-md py-2">SKU ID</th>
+                    <th class="px-space-md py-2">Product Name</th>
+                    <th class="px-space-md py-2">Category</th>
+                    <th class="px-space-md py-2 text-right">Expired Units</th>
+                    <th class="px-space-md py-2 text-right">Unit Price</th>
+                    <th class="px-space-md py-2">Expiry Date</th>
+                    <th class="px-space-md py-2 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="alerts-expired-table-body" class="divide-y divide-surface-container">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Section: Low Stock Threshold Table -->
+          <div class="bg-surface-container-lowest rounded-xl shadow-sm p-space-lg">
+            <div class="flex items-center justify-between mb-space-md">
+              <div class="flex items-center gap-2">
+                <span class="p-1 rounded bg-[#f59e0b] text-white flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[16px]">warning</span>
+                </span>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Low Safety Stock & Depleted SKUs</h3>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="h-10 bg-surface-container-low text-on-surface-variant font-caption-medium text-caption-medium uppercase">
+                    <th class="px-space-md py-2">SKU ID</th>
+                    <th class="px-space-md py-2">Product Name</th>
+                    <th class="px-space-md py-2">Category</th>
+                    <th class="px-space-md py-2 text-right">Units Available</th>
+                    <th class="px-space-md py-2 text-right">Min Threshold</th>
+                    <th class="px-space-md py-2 text-center">Status</th>
+                    <th class="px-space-md py-2 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="alerts-lowstock-table-body" class="divide-y divide-surface-container">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= SCREEN 6: REPORTS & DATA EXPORT ================= -->
+      <section id="view-reports" class="view-panel hidden">
+        <div class="flex flex-col w-full">
+          <!-- Header -->
+          <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
+            <div class="flex flex-col">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-badge-label text-badge-label uppercase text-secondary tracking-widest">Analytics & Compliance Hub</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                <span class="font-tabular-data text-caption-regular text-on-surface-variant">DATA EXPORT CENTER</span>
+              </div>
+              <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Reports & Data Export</h1>
+              <p class="font-body-regular text-body-regular text-on-surface-variant max-w-3xl mt-1">
+                Generate operational summaries and download complete inventory datasets for external audit or spreadsheet analysis.
+              </p>
+            </div>
+          </div>
+
+          <!-- Financial KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-space-md mb-space-lg">
+            <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm">
+              <span class="font-badge-label text-badge-label uppercase tracking-wider text-on-surface-variant">Total Catalog SKUs</span>
+              <div id="rep-sku-count" class="font-headline-lg text-headline-lg font-tabular-data text-on-surface mt-2">12</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm">
+              <span class="font-badge-label text-badge-label uppercase tracking-wider text-on-surface-variant">Total Physical Units</span>
+              <div id="rep-unit-count" class="font-headline-lg text-headline-lg font-tabular-data text-on-surface mt-2">377</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm">
+              <span class="font-badge-label text-badge-label uppercase tracking-wider text-on-surface-variant">Gross Inventory Valuation</span>
+              <div id="rep-total-val" class="font-headline-lg text-headline-lg font-tabular-data text-primary mt-2">Rs 58,490.00</div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm">
+              <span class="font-badge-label text-badge-label uppercase tracking-wider text-error">Expired Batch Write-off</span>
+              <div id="rep-expired-val" class="font-headline-lg text-headline-lg font-tabular-data text-error mt-2">Rs 4,120.00</div>
+            </div>
+          </div>
+
+          <!-- Export Action Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-space-lg">
+            <!-- Card 1: Full CSV Export -->
+            <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="w-12 h-12 rounded-lg bg-surface-container-low text-secondary flex items-center justify-center mb-space-md">
+                  <span class="material-symbols-outlined text-[28px]">table_view</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Download Complete CSV Dataset</h3>
+                <p class="font-body-regular text-body-regular text-on-surface-variant mt-2">
+                  Exports every product row in the SQLite database with full metadata: Product ID, Name, Category, Quantity, Unit Price, Expiry Date, Min Stock Threshold, Stock Status, Expiry Status, Days Remaining, and Created/Updated Timestamps.
+                </p>
+              </div>
+              <div class="pt-space-lg">
+                <button onclick="downloadCSV()" class="w-full h-[42px] rounded-lg bg-secondary hover:bg-on-secondary-container text-on-secondary font-body-semibold text-body-semibold transition-all flex items-center justify-center gap-2 shadow-sm" type="button">
+                  <span class="material-symbols-outlined text-[20px]">download</span>
+                  <span>Download Inventory as CSV</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card 2: Summary Report -->
+            <div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="w-12 h-12 rounded-lg bg-surface-container text-primary flex items-center justify-center mb-space-md">
+                  <span class="material-symbols-outlined text-[28px]">description</span>
+                </div>
+                <h3 class="font-headline-md text-headline-md text-on-surface">Download Text Summary Snapshot</h3>
+                <p class="font-body-regular text-body-regular text-on-surface-variant mt-2">
+                  Generates an executive text summary report containing total inventory valuation, aggregate units, expired discrepancy counts, low stock counts, and system generation date.
+                </p>
+              </div>
+              <div class="pt-space-lg">
+                <button onclick="downloadSummary()" class="w-full h-[42px] rounded-lg bg-primary-container hover:bg-primary text-on-primary font-body-semibold text-body-semibold transition-all flex items-center justify-center gap-2 shadow-sm" type="button">
+                  <span class="material-symbols-outlined text-[20px]">file_download</span>
+                  <span>Download Text Summary</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= SCREEN 7: SYSTEM AUDIT LOG ================= -->
+      <section id="view-audit" class="view-panel hidden">
+        <div class="flex flex-col w-full">
+          <!-- Header -->
+          <div class="flex flex-col xl:flex-row xl:items-end justify-between gap-space-lg pb-space-lg">
+            <div class="flex flex-col gap-1.5 max-w-3xl">
+              <div class="flex items-center gap-space-sm">
+                <span class="font-badge-label text-badge-label uppercase tracking-widest text-primary-container bg-surface-container-high px-2.5 py-0.5 rounded-full font-body-semibold">Compliance Tier-1</span>
+                <span class="text-caption-regular font-caption-regular text-outline flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-secondary inline-block"></span>
+                  Ledger Consensus: Synced & Verified
+                </span>
+              </div>
+              <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">System Audit Log</h1>
+              <p class="font-body-regular text-body-regular text-on-surface-variant leading-relaxed">
+                Chronological event ledger recording all catalog additions, modifications, and deletions for governance and traceability.
+              </p>
+            </div>
+            <div class="flex items-center gap-space-sm flex-wrap">
+              <button onclick="downloadAuditJSON()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-on-secondary hover:bg-secondary-fixed-dim transition-colors shadow-sm" type="button">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                <span class="font-body-semibold text-body-semibold">Export Audit Log (JSON)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Audit Ledger Table -->
+          <div class="bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden">
+            <div class="h-12 px-space-md bg-surface-container-lowest flex items-center justify-between border-b border-surface-container">
+              <span class="font-tabular-data text-caption-medium text-on-surface-variant">
+                Immutable Transaction History
+              </span>
+              <span class="font-badge-label text-badge-label uppercase text-secondary">
+                Tamper-Resistant Log
+              </span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="h-10 bg-surface-container-low text-on-surface-variant font-caption-medium text-caption-medium uppercase tracking-wider">
+                    <th class="px-space-md py-2">Log ID</th>
+                    <th class="px-space-md py-2">Timestamp</th>
+                    <th class="px-space-md py-2">Action</th>
+                    <th class="px-space-md py-2">Product Ref</th>
+                    <th class="px-space-lg py-2">Event Description</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-table-body" class="divide-y divide-surface-container font-body-regular text-body-regular text-on-surface">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SCREEN 8: STREAMLIT ANALYTICS STUDIO ================= -->
+      <section id="view-streamlit" class="view-panel hidden">
+        <div class="flex flex-col w-full h-[calc(100vh-7rem)]">
+          <!-- Top Meta Bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 mb-3 border-b border-surface-container">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+                <span class="material-symbols-outlined text-[20px]">analytics</span>
+              </div>
+              <div>
+                <h1 class="font-headline-md text-headline-md text-on-surface">Streamlit Analytics Studio</h1>
+                <p class="font-caption-regular text-caption-regular text-on-surface-variant">Secondary Python-native interface running live on Port 8501 (Shares exact same SQLite database)</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 self-start sm:self-auto">
+              <a href="http://localhost:8501" target="_blank" class="h-[36px] px-3.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body-medium text-caption-medium flex items-center gap-1.5 transition-colors shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                <span>Open in Full Window</span>
+              </a>
+              <button onclick="document.getElementById('streamlit-frame').src = 'http://localhost:8501/?embedded=true&t=' + Date.now()" class="h-[36px] px-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-body-medium text-caption-medium flex items-center gap-1 transition-colors shadow-sm" title="Reload Frame">
+                <span class="material-symbols-outlined text-[16px]">refresh</span>
+                <span>Reload Frame</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Cloud Hosting Notice Banner -->
+          <div class="mb-3 p-3.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-body-medium flex items-start gap-3 shadow-xs">
+            <span class="material-symbols-outlined text-primary text-[22px] mt-0.5">info</span>
+            <div class="flex-1">
+              <strong class="font-body-semibold">Hosted Mode Notice:</strong> Streamlit Analytics is a secondary Python-powered studio intended for local server execution. When running the repository locally (`python main.py 5000` or `streamlit run smartshelf/app.py`), the live interactive charts embed directly into the frame below. In this hosted GitHub Pages environment, all core inventory management, CRUD operations, expiry horizons, alerts, CSV exports, and audit logging remain 100% active and interactive in the other tabs!
+            </div>
+          </div>
+
+          <!-- Embedded Streamlit Container -->
+          <div class="flex-1 w-full bg-white rounded-xl shadow-sm overflow-hidden border border-outline-variant/60">
+            <iframe id="streamlit-frame" src="http://localhost:8501/?embedded=true" class="w-full h-full border-0"></iframe>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= DELETE CONFIRMATION MODAL ================= -->
+  <div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div class="bg-surface-container-lowest rounded-xl shadow-2xl max-w-md w-full p-space-lg border border-outline-variant flex flex-col gap-space-md">
+      <div class="flex items-center gap-space-sm text-error">
+        <span class="material-symbols-outlined text-[28px]">warning</span>
+        <h3 class="font-headline-md text-headline-md text-on-surface">Confirm Product Deletion</h3>
+      </div>
+      <p class="font-body-regular text-body-regular text-on-surface-variant">
+        Are you sure you want to permanently delete <strong id="delete-modal-product-name" class="text-on-surface"></strong> from the active inventory catalog? This action will be recorded in the audit trail.
+      </p>
+      <div class="flex items-center justify-end gap-space-sm pt-space-xs border-t border-surface-container">
+        <button onclick="closeDeleteModal()" class="px-space-md py-2 rounded-lg bg-surface-container text-on-surface hover:bg-surface-container-high transition-colors font-body-medium">
+          Cancel
+        </button>
+        <button id="confirm-delete-btn" class="px-space-md py-2 rounded-lg bg-error text-white hover:bg-[#991b1b] transition-colors font-body-semibold shadow-sm">
+          Delete Product
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FLOATING TOAST NOTIFICATION ================= -->
+  <div id="statusToast" class="hidden fixed bottom-6 right-6 z-50 bg-inverse-surface text-inverse-on-surface px-space-md py-3 rounded-lg shadow-xl flex items-center gap-space-sm transition-all transform duration-300 translate-y-2">
+    <span class="material-symbols-outlined text-secondary-fixed text-[20px]">check_circle</span>
+    <span id="statusToastText" class="font-body-medium text-body-medium">Operation completed successfully.</span>
+  </div>
+
+  <!-- ================= MAIN CONTROLLER & APPLICATION SCRIPTS ================= -->
+  <script>
+    // State stores
+    let allProducts = [];
+    let auditLogs = [];
+    let currentInspectedProduct = null;
+    let pendingDeleteId = null;
+    let isBackendActive = false;
+
+    // Base API path
+    const API_BASE = window.location.origin;
+
+    // Relative Date Formatter Helper
+    function addDays(num) {
+      const d = new Date();
+      d.setDate(d.getDate() + num);
+      return d.toISOString().split('T')[0];
+    }
+
+    function nowStr() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    // Default Enterprise Seed Data (matches SQLite database.py schema)
+    function getDefaultProducts() {
+      return [
+        { id: 1, name: "Whole Milk 1L", category: "Dairy & Refrigerated", quantity: 42, unit_price: 32.0, expiry_date: addDays(3), min_stock: 15, created_at: nowStr(), updated_at: nowStr() },
+        { id: 2, name: "Artisan Baguette 400g", category: "Bakery", quantity: 18, unit_price: 45.0, expiry_date: addDays(-1), min_stock: 10, created_at: nowStr(), updated_at: nowStr() },
+        { id: 3, name: "Fresh Greek Yogurt 500g", category: "Dairy & Refrigerated", quantity: 0, unit_price: 85.0, expiry_date: addDays(-3), min_stock: 10, created_at: nowStr(), updated_at: nowStr() },
+        { id: 4, name: "Cold Pressed Orange Juice 350ml", category: "Beverages", quantity: 8, unit_price: 65.0, expiry_date: addDays(1), min_stock: 15, created_at: nowStr(), updated_at: nowStr() },
+        { id: 5, name: "Cold Brew Coffee 330ml", category: "Beverages", quantity: 120, unit_price: 85.0, expiry_date: "2027-01-15", min_stock: 20, created_at: nowStr(), updated_at: nowStr() },
+        { id: 6, name: "Baby Spinach 200g", category: "Produce", quantity: 14, unit_price: 45.0, expiry_date: addDays(2), min_stock: 20, created_at: nowStr(), updated_at: nowStr() },
+        { id: 7, name: "Organic Basmati Rice 1kg", category: "Grocery", quantity: 25, unit_price: 70.0, expiry_date: "2027-04-01", min_stock: 5, created_at: nowStr(), updated_at: nowStr() },
+        { id: 8, name: "Dishwashing Liquid Citrus 750ml", category: "Household", quantity: 32, unit_price: 95.0, expiry_date: null, min_stock: 10, created_at: nowStr(), updated_at: nowStr() },
+        { id: 9, name: "Arabica Roast Coffee Beans 500g", category: "Beverages", quantity: 65, unit_price: 350.0, expiry_date: "2027-05-15", min_stock: 15, created_at: nowStr(), updated_at: nowStr() },
+        { id: 10, name: "Almond Milk Unsweetened 1L", category: "Dairy & Refrigerated", quantity: 5, unit_price: 110.0, expiry_date: addDays(5), min_stock: 10, created_at: nowStr(), updated_at: nowStr() },
+        { id: 11, name: "Sourdough Artisan Loaf", category: "Bakery", quantity: 3, unit_price: 60.0, expiry_date: addDays(-2), min_stock: 5, created_at: nowStr(), updated_at: nowStr() },
+        { id: 12, name: "Organic Haas Avocados 4pk", category: "Produce", quantity: 45, unit_price: 120.0, expiry_date: addDays(5), min_stock: 10, created_at: nowStr(), updated_at: nowStr() }
+      ];
+    }
+
+    function getDefaultAuditLogs() {
+      return [
+        { id: 1, action: "ADD", product_id: 1, details: "Ingested baseline perishable lot: Whole Milk 1L (Qty: 42)", timestamp: nowStr() },
+        { id: 2, action: "ADD", product_id: 4, details: "Safety buffer replenishment: Cold Pressed Orange Juice 350ml", timestamp: nowStr() },
+        { id: 3, action: "EDIT", product_id: 2, details: "Price override: Artisan Baguette 400g marked down for fast clearance", timestamp: nowStr() },
+        { id: 4, action: "ADD", product_id: 9, details: "Warehouse receipt logged for Arabica Roast Coffee Beans 500g", timestamp: nowStr() }
+      ];
+    }
+
+    // Business Logic Engine (mirrors inventory_logic.py)
+    function enrichProduct(p) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      let expiry_status = "N/A";
+      let days_until_expiry = null;
+
+      if (p.expiry_date) {
+        const parts = p.expiry_date.split('-');
+        if (parts.length === 3) {
+          const exp = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+          exp.setHours(0, 0, 0, 0);
+          const diffDays = Math.round((exp.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+          days_until_expiry = diffDays;
+          if (diffDays < 0) {
+            expiry_status = "Expired";
+          } else if (diffDays <= 7) {
+            expiry_status = "Expiring Soon";
+          } else {
+            expiry_status = "OK";
+          }
+        }
+      }
+
+      let stock_status = "In Stock";
+      const minStock = p.min_stock !== undefined ? parseInt(p.min_stock) : 5;
+      const qty = parseInt(p.quantity || 0);
+
+      if (qty === 0) {
+        stock_status = "Out of Stock";
+      } else if (qty <= minStock) {
+        stock_status = "Low Stock";
+      }
+
+      return {
+        ...p,
+        quantity: qty,
+        unit_price: parseFloat(p.unit_price || 0),
+        min_stock: minStock,
+        expiry_status,
+        days_until_expiry,
+        stock_status
+      };
+    }
+
+    // Local Storage Reactive Data Store
+    const LocalStorageStore = {
+      KEY_PRODUCTS: 'smartshelf_products_v1',
+      KEY_LOGS: 'smartshelf_audit_logs_v1',
+
+      getProductsRaw() {
+        try {
+          const stored = localStorage.getItem(this.KEY_PRODUCTS);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {
+          console.warn("Could not read localStorage:", e);
+        }
+        const seeds = getDefaultProducts();
+        this.saveProducts(seeds);
+        return seeds;
+      },
+
+      saveProducts(products) {
+        try {
+          localStorage.setItem(this.KEY_PRODUCTS, JSON.stringify(products));
+        } catch (e) {
+          console.error("Failed to save to localStorage:", e);
+        }
+      },
+
+      getEnrichedProducts() {
+        const raw = this.getProductsRaw();
+        return raw.map(enrichProduct);
+      },
+
+      addProduct(item) {
+        const products = this.getProductsRaw();
+        const nextId = products.reduce((max, p) => Math.max(max, p.id || 0), 0) + 1;
+        const now = nowStr();
+        const newProduct = {
+          id: nextId,
+          name: item.name.trim(),
+          category: item.category.trim(),
+          quantity: parseInt(item.quantity || 0),
+          unit_price: parseFloat(item.unit_price || 0),
+          expiry_date: item.expiry_date || null,
+          min_stock: parseInt(item.min_stock || 5),
+          created_at: now,
+          updated_at: now
+        };
+        products.push(newProduct);
+        this.saveProducts(products);
+        this.addAuditLog("ADD", nextId, `Added product '${newProduct.name}' with initial stock ${newProduct.quantity}`);
+        return enrichProduct(newProduct);
+      },
+
+      updateProduct(id, updates) {
+        const products = this.getProductsRaw();
+        const idx = products.findIndex(p => p.id == id);
+        if (idx === -1) return null;
+        const now = nowStr();
+        products[idx] = {
+          ...products[idx],
+          name: updates.name.trim(),
+          category: updates.category.trim(),
+          quantity: parseInt(updates.quantity || 0),
+          unit_price: parseFloat(updates.unit_price || 0),
+          expiry_date: updates.expiry_date || null,
+          min_stock: parseInt(updates.min_stock || 5),
+          updated_at: now
+        };
+        this.saveProducts(products);
+        this.addAuditLog("EDIT", id, `Updated SKU #${id} (${products[idx].name}): ${products[idx].quantity} units @ Rs ${products[idx].unit_price}`);
+        return enrichProduct(products[idx]);
+      },
+
+      deleteProduct(id) {
+        let products = this.getProductsRaw();
+        const item = products.find(p => p.id == id);
+        const name = item ? item.name : `SKU #${id}`;
+        products = products.filter(p => p.id != id);
+        this.saveProducts(products);
+        this.addAuditLog("DELETE", id, `De-registered product '${name}' from inventory catalog`);
+        return true;
+      },
+
+      getStats() {
+        const products = this.getEnrichedProducts();
+        const total_products = products.length;
+        const total_units = products.reduce((s, p) => s + p.quantity, 0);
+        const total_value = products.reduce((s, p) => s + (p.quantity * p.unit_price), 0);
+
+        const expired_count = products.filter(p => p.expiry_status === "Expired").length;
+        const expiring_soon_count = products.filter(p => p.expiry_status === "Expiring Soon").length;
+        const out_of_stock_count = products.filter(p => p.stock_status === "Out of Stock").length;
+        const low_stock_count = products.filter(p => p.stock_status === "Low Stock" || p.stock_status === "Out of Stock").length;
+        const in_stock_count = Math.max(0, total_products - low_stock_count);
+
+        // Category breakdown
+        const catMap = {};
+        products.forEach(p => {
+          const c = p.category || "General";
+          catMap[c] = (catMap[c] || 0) + p.quantity;
+        });
+
+        const sortedCats = Object.entries(catMap).sort((a, b) => b[1] - a[1]);
+        const divisor = total_units > 0 ? total_units : 1;
+        const categories = sortedCats.map(([name, units]) => ({
+          name,
+          units,
+          pct: Math.round((units / divisor) * 100 * 10) / 10
+        }));
+
+        return {
+          total_products,
+          total_units,
+          total_value,
+          expired_count,
+          expiring_soon_count,
+          low_stock_count,
+          out_of_stock_count,
+          in_stock_count,
+          categories
+        };
+      },
+
+      getAlerts() {
+        const products = this.getEnrichedProducts();
+        const expired = products.filter(p => p.expiry_status === "Expired");
+        const expiring_soon = products.filter(p => p.expiry_status === "Expiring Soon");
+        const low_stock = products.filter(p => p.stock_status === "Low Stock");
+        const out_of_stock = products.filter(p => p.stock_status === "Out of Stock");
+        const expired_value = expired.reduce((sum, p) => sum + (p.quantity * p.unit_price), 0);
+
+        return {
+          expired,
+          expiring_soon,
+          low_stock,
+          out_of_stock,
+          expired_value,
+          total_alerts: expired.length + expiring_soon.length + low_stock.length + out_of_stock.length
+        };
+      },
+
+      getAuditLogs() {
+        try {
+          const stored = localStorage.getItem(this.KEY_LOGS);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          }
+        } catch (e) {
+          console.warn("Could not read audit logs:", e);
+        }
+        const seeds = getDefaultAuditLogs();
+        this.saveAuditLogs(seeds);
+        return seeds;
+      },
+
+      saveAuditLogs(logs) {
+        try {
+          localStorage.setItem(this.KEY_LOGS, JSON.stringify(logs));
+        } catch (e) {
+          console.error("Failed to save audit logs:", e);
+        }
+      },
+
+      addAuditLog(action, product_id, details) {
+        const logs = this.getAuditLogs();
+        const nextId = logs.reduce((m, l) => Math.max(m, l.id || 0), 0) + 1;
+        logs.unshift({
+          id: nextId,
+          action,
+          product_id,
+          details,
+          timestamp: nowStr()
+        });
+        this.saveAuditLogs(logs);
+      },
+
+      resetToDemo() {
+        localStorage.removeItem(this.KEY_PRODUCTS);
+        localStorage.removeItem(this.KEY_LOGS);
+        this.getProductsRaw();
+        this.getAuditLogs();
+      }
+    };
+
+    // System connectivity checker
+    async function checkBackendConnectivity() {
+      if (window.location.hostname.includes('github.io') || window.location.protocol === 'file:') {
+        isBackendActive = false;
+        updateSystemStatusIndicator(false);
+        return;
+      }
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1200);
+        const res = await fetch(API_BASE + '/api/stats', { signal: controller.signal });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          isBackendActive = true;
+          updateSystemStatusIndicator(true);
+          return;
+        }
+      } catch (e) {
+        // Backend offline, fallback to local storage
+      }
+      isBackendActive = false;
+      updateSystemStatusIndicator(false);
+    }
+
+    function updateSystemStatusIndicator(active) {
+      const pill = document.getElementById('system-status-pill');
+      const text = document.getElementById('system-status-text');
+      const dot = document.getElementById('system-status-dot');
+      const resetBtn = document.getElementById('reset-demo-btn');
+
+      if (!pill || !text) return;
+
+      if (active) {
+        pill.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/40 border border-secondary';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-secondary animate-pulse';
+        text.textContent = 'Operational (FastAPI Connected)';
+        if (resetBtn) resetBtn.classList.add('hidden');
+      } else {
+        pill.className = 'flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/40 text-emerald-800';
+        if (dot) dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
+        text.textContent = 'Live Cloud Demo (Local Storage Active)';
+        if (resetBtn) resetBtn.classList.remove('hidden');
+      }
+    }
+
+    function resetDemoDataPrompt() {
+      if (confirm('Reset inventory catalog and audit ledger to default enterprise demo state?')) {
+        LocalStorageStore.resetToDemo();
+        showToast('Demo inventory dataset successfully restored.');
+        const hash = window.location.hash.replace('#', '') || 'dashboard';
+        navigateTo(hash);
+      }
+    }
+
+    // Toast Notification Utility
+    function showToast(message) {
+      const toast = document.getElementById('statusToast');
+      const text = document.getElementById('statusToastText');
+      text.textContent = message;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.remove('translate-y-2'), 10);
+      setTimeout(() => {
+        toast.classList.add('translate-y-2');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 3500);
+    }
+
+    // Navigation Router
+    function navigateTo(viewName) {
+      // Update panels
+      const panels = document.querySelectorAll('.view-panel');
+      panels.forEach(p => p.classList.add('hidden'));
+
+      const target = document.getElementById('view-' + viewName);
+      if (target) {
+        target.classList.remove('hidden');
+      }
+
+      // Update sidebar links
+      const navLinks = document.querySelectorAll('.nav-item');
+      navLinks.forEach(item => {
+        const path = item.getAttribute('data-path');
+        if (path === viewName) {
+          item.className = 'nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg transition-colors bg-primary-container text-on-primary font-body-semibold cursor-pointer';
+        } else {
+          item.className = 'nav-item flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-inverse-on-surface hover:bg-slate-800 hover:text-white transition-colors cursor-pointer';
+        }
+      });
+
+      // Update URL hash
+      if (window.location.hash !== '#' + viewName) {
+        window.location.hash = '#' + viewName;
+      }
+
+      // Refresh data when navigating
+      if (viewName === 'dashboard') loadDashboard();
+      if (viewName === 'catalog') loadCatalog();
+      if (viewName === 'alerts') loadAlerts();
+      if (viewName === 'reports') loadReports();
+      if (viewName === 'audit') loadAuditLog();
+      if (viewName === 'edit') populateEditProductDropdown();
+    }
+
+    // Hashchange listener
+    window.addEventListener('hashchange', () => {
+      const hash = window.location.hash.replace('#', '') || 'dashboard';
+      navigateTo(hash);
+    });
+
+    // Attach click handlers to nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const path = item.getAttribute('data-path');
+        navigateTo(path);
+      });
+    });
+
+    // Top global search handler
+    document.getElementById('global-search-input').addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (val.trim()) {
+        if (!window.location.hash.includes('catalog')) {
+          navigateTo('catalog');
+        }
+        document.getElementById('catalog-search-input').value = val;
+        applyCatalogFilters();
+      }
+    });
+
+    // Format helpers
+    function formatCurrency(val) {
+      return 'Rs ' + parseFloat(val || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    // API calls
+    async function fetchAPI(endpoint, options = {}) {
+      if (isBackendActive) {
+        try {
+          const res = await fetch(API_BASE + endpoint, {
+            headers: { 'Content-Type': 'application/json' },
+            ...options
+          });
+          if (res.ok) return await res.json();
+        } catch (err) {
+          console.warn('API call failed, switching to local store:', err);
+          isBackendActive = false;
+          updateSystemStatusIndicator(false);
+        }
+      }
+      return null;
+    }
+
+    // ================= DASHBOARD CONTROLLER =================
+    async function loadDashboard() {
+      let stats = await fetchAPI('/api/stats');
+      let products = await fetchAPI('/api/products');
+
+      if (!stats || !products) {
+        stats = LocalStorageStore.getStats();
+        products = LocalStorageStore.getEnrichedProducts();
+      }
+      allProducts = products;
+
+      if (stats) {
+        document.getElementById('kpi-total-skus').textContent = stats.total_products;
+        document.getElementById('kpi-total-units').textContent = stats.total_units.toLocaleString();
+        document.getElementById('kpi-total-valuation').textContent = formatCurrency(stats.total_value);
+        document.getElementById('kpi-expired-count').textContent = stats.expired_count;
+        document.getElementById('kpi-low-stock-count').textContent = stats.low_stock_count;
+
+        // Alerts badge in sidebar
+        const totalAlerts = stats.expired_count + stats.low_stock_count;
+        const badge = document.getElementById('sidebar-alert-badge');
+        badge.textContent = totalAlerts;
+        badge.className = totalAlerts > 0 ? 'ml-auto px-1.5 py-0.5 rounded-full bg-error text-white text-[10px] font-bold font-tabular-data' : 'hidden';
+
+        // Header dot
+        document.getElementById('header-alert-indicator').className = totalAlerts > 0 ? 'absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error' : 'hidden';
+
+        // Render Category Bars
+        const catContainer = document.getElementById('dashboard-category-bars');
+        catContainer.innerHTML = '';
+        const barColors = ['bg-primary', 'bg-primary-container', 'bg-secondary', 'bg-secondary-fixed-dim', 'bg-tertiary-container'];
+        
+        stats.categories.forEach((cat, idx) => {
+          const color = barColors[idx % barColors.length];
+          const div = document.createElement('div');
+          div.className = 'space-y-1.5';
+          div.innerHTML = `
+            <div class="flex items-center justify-between font-body-medium text-body-medium">
+              <span class="text-on-surface flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-sm ${color}"></span>
+                <span>${cat.name}</span>
+              </span>
+              <div class="font-tabular-data text-right">
+                <span class="text-on-surface font-body-semibold">${cat.units.toLocaleString()}</span>
+                <span class="text-outline text-caption-regular ml-1.5">(${cat.pct}%)</span>
+              </div>
+            </div>
+            <div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+              <div class="h-full ${color} rounded-full transition-all duration-500" style="width: ${cat.pct}%"></div>
+            </div>
+          `;
+          catContainer.appendChild(div);
+        });
+
+        // Stock Health Segmented Bar
+        const total = stats.total_products || 1;
+        const inStockPct = Math.round((stats.in_stock_count / total) * 100);
+        const lowStockPct = Math.round(((stats.low_stock_count - stats.out_of_stock_count) / total) * 100);
+        const outStockPct = Math.round((stats.out_of_stock_count / total) * 100);
+
+        document.getElementById('health-bar-instock').style.width = inStockPct + '%';
+        document.getElementById('health-bar-lowstock').style.width = lowStockPct + '%';
+        document.getElementById('health-bar-outofstock').style.width = outStockPct + '%';
+
+        document.getElementById('health-card-instock-pct').textContent = inStockPct + '%';
+        document.getElementById('health-card-instock-count').textContent = stats.in_stock_count + ' SKUs';
+
+        document.getElementById('health-card-lowstock-pct').textContent = lowStockPct + '%';
+        document.getElementById('health-card-lowstock-count').textContent = (stats.low_stock_count - stats.out_of_stock_count) + ' SKUs';
+
+        document.getElementById('health-card-outofstock-pct').textContent = outStockPct + '%';
+        document.getElementById('health-card-outofstock-count').textContent = stats.out_of_stock_count + ' SKUs';
+      }
+
+      // Render upcoming expirations table
+      const expTable = document.getElementById('dashboard-expirations-table');
+      expTable.innerHTML = '';
+      
+      const expiringList = products
+        .filter(p => p.expiry_status === 'Expiring Soon' || p.expiry_status === 'Expired')
+        .slice(0, 6);
+
+      if (expiringList.length === 0) {
+        expTable.innerHTML = '<tr><td colspan="8" class="px-6 py-4 text-center text-on-surface-variant font-caption-regular">No critical expired or expiring items found.</td></tr>';
+      } else {
+        expiringList.forEach(p => {
+          const isExpired = p.expiry_status === 'Expired';
+          const rowClass = isExpired ? 'bg-[#fee2e2]/20 hover:bg-[#fee2e2]/40 transition-colors' : 'hover:bg-surface transition-colors';
+          const badgeClass = isExpired 
+            ? 'bg-error-container text-error' 
+            : 'bg-[#fef3c7] text-[#92400e]';
+          const statusBadge = isExpired
+            ? '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-error-container text-error font-badge-label text-badge-label uppercase">Expired</span>'
+            : '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-[#fef3c7] text-[#b45309] font-badge-label text-badge-label uppercase">Expiring Soon</span>';
+
+          const daysText = isExpired ? 'Past expiry' : (p.days_until_expiry + ' days left');
+
+          const tr = document.createElement('tr');
+          tr.className = `h-12 ${rowClass} cursor-pointer`;
+          tr.onclick = () => {
+            inspectProduct(p.id);
+            navigateTo('catalog');
+          };
+          tr.innerHTML = `
+            <td class="px-space-lg py-2 font-tabular-data text-body-medium font-body-semibold text-primary">#${p.id}</td>
+            <td class="px-space-md py-2 font-body-semibold text-body-semibold text-on-surface">${p.name}</td>
+            <td class="px-space-md py-2"><span class="inline-flex items-center px-2 py-0.5 rounded bg-surface-container text-on-surface font-caption-regular">${p.category}</span></td>
+            <td class="px-space-md py-2 text-right font-tabular-data text-body-medium text-on-surface">${p.quantity} units</td>
+            <td class="px-space-md py-2 text-right font-tabular-data text-body-medium text-on-surface">${formatCurrency(p.unit_price)}</td>
+            <td class="px-space-md py-2 font-tabular-data text-body-regular text-on-surface">${p.expiry_date || 'N/A'}</td>
+            <td class="px-space-md py-2"><span class="inline-flex items-center px-2 py-0.5 rounded-full ${badgeClass} font-badge-label text-badge-label font-tabular-data font-body-semibold">${daysText}</span></td>
+            <td class="px-space-lg py-2 text-center">${statusBadge}</td>
+          `;
+          expTable.appendChild(tr);
+        });
+      }
+    }
+
+
+    // ================= CATALOG CONTROLLER =================
+    async function loadCatalog() {
+      let products = await fetchAPI('/api/products');
+      if (!products) {
+        products = LocalStorageStore.getEnrichedProducts();
+      }
+      allProducts = products;
+      applyCatalogFilters();
+      if (allProducts.length > 0 && !currentInspectedProduct) {
+        inspectProduct(allProducts[0].id);
+      }
+    }
+
+    function applyCatalogFilters() {
+      const q = (document.getElementById('catalog-search-input').value || '').toLowerCase().trim();
+      const cat = document.getElementById('catalog-filter-category').value;
+      const stock = document.getElementById('catalog-filter-stock').value;
+      const expiry = document.getElementById('catalog-filter-expiry').value;
+
+      const filtered = allProducts.filter(p => {
+        if (q && !p.name.toLowerCase().includes(q) && !String(p.id).includes(q)) return false;
+        if (cat !== 'All' && p.category !== cat) return false;
+        if (stock !== 'All' && p.stock_status !== stock) return false;
+        if (expiry !== 'All' && p.expiry_status !== expiry) return false;
+        return true;
+      });
+
+      renderCatalogTable(filtered);
+    }
+
+    function resetCatalogFilters() {
+      document.getElementById('catalog-search-input').value = '';
+      document.getElementById('catalog-filter-category').value = 'All';
+      document.getElementById('catalog-filter-stock').value = 'All';
+      document.getElementById('catalog-filter-expiry').value = 'All';
+      applyCatalogFilters();
+    }
+
+    function renderCatalogTable(products) {
+      const tbody = document.getElementById('catalog-table-body');
+      tbody.innerHTML = '';
+      document.getElementById('catalog-items-count-label').textContent = `Displaying ${products.length} of ${allProducts.length} catalog products`;
+
+      if (products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="px-6 py-8 text-center text-on-surface-variant font-caption-regular">No products match your filter criteria.</td></tr>';
+        return;
+      }
+
+      products.forEach(p => {
+        const isSelected = currentInspectedProduct && currentInspectedProduct.id === p.id;
+        const rowBg = isSelected ? 'bg-surface-container-high/60' : 'hover:bg-surface-container-low/70';
+
+        let stockPill = '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#dcfce7] text-[#16a34a] font-badge-label text-badge-label uppercase">In Stock</span>';
+        if (p.stock_status === 'Low Stock') {
+          stockPill = '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#d97706] font-badge-label text-badge-label uppercase">Low Stock</span>';
+        } else if (p.stock_status === 'Out of Stock') {
+          stockPill = '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#fee2e2] text-[#dc2626] font-badge-label text-badge-label uppercase">Out of Stock</span>';
+        }
+
+        let expiryPill = '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#dcfce7] text-[#16a34a] font-badge-label text-badge-label uppercase">OK</span>';
+        if (p.expiry_status === 'Expired') {
+          expiryPill = '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#fee2e2] text-[#dc2626] font-badge-label text-badge-label uppercase">Expired</span>';
+        } else if (p.expiry_status === 'Expiring Soon') {
+          expiryPill = '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#d97706] font-badge-label text-badge-label uppercase">Expiring Soon</span>';
+        } else if (p.expiry_status === 'N/A') {
+          expiryPill = '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-badge-label text-badge-label uppercase">N/A</span>';
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = `h-12 ${rowBg} transition-colors cursor-pointer`;
+        tr.onclick = () => inspectProduct(p.id);
+        tr.innerHTML = `
+          <td class="px-space-sm font-tabular-data text-tabular-data font-body-semibold text-primary-container">#${p.id}</td>
+          <td class="px-space-sm font-body-medium text-body-medium text-on-surface whitespace-nowrap">${p.name}</td>
+          <td class="px-space-sm text-on-surface-variant font-caption-medium text-caption-medium whitespace-nowrap">${p.category}</td>
+          <td class="px-space-sm text-right font-tabular-data text-tabular-data text-on-surface">${p.quantity}</td>
+          <td class="px-space-sm text-right font-tabular-data text-tabular-data text-on-surface-variant">${formatCurrency(p.unit_price)}</td>
+          <td class="px-space-sm font-tabular-data text-tabular-data text-on-surface-variant whitespace-nowrap">${p.expiry_date || 'N/A'}</td>
+          <td class="px-space-sm text-center whitespace-nowrap">${stockPill}</td>
+          <td class="px-space-sm text-center whitespace-nowrap">${expiryPill}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function inspectProduct(id) {
+      const p = allProducts.find(x => x.id === id);
+      if (!p) return;
+      currentInspectedProduct = p;
+
+      document.getElementById('inspector-sku-badge').textContent = `SKU #${p.id}`;
+      document.getElementById('inspector-id').textContent = `#${p.id}`;
+      document.getElementById('inspector-name').textContent = p.name;
+      document.getElementById('inspector-category').textContent = p.category;
+      document.getElementById('inspector-cat-text').textContent = p.category;
+      document.getElementById('inspector-unit-price').textContent = formatCurrency(p.unit_price);
+      document.getElementById('inspector-valuation').textContent = formatCurrency(p.quantity * p.unit_price);
+      document.getElementById('inspector-expiry-date').textContent = p.expiry_date || 'None (Non-Perishable)';
+
+      const ratio = p.quantity + ' / ' + p.min_stock + ' Units';
+      document.getElementById('inspector-stock-ratio').textContent = ratio;
+      document.getElementById('inspector-threshold-note').textContent = `Minimum alert threshold is ${p.min_stock} units.`;
+
+      const bar = document.getElementById('inspector-progress-bar');
+      const pct = Math.min(100, Math.max(5, (p.quantity / (p.min_stock * 2 || 10)) * 100));
+      bar.style.width = pct + '%';
+      bar.className = p.quantity <= p.min_stock ? 'h-full bg-[#f59e0b]' : 'h-full bg-secondary';
+
+      const expBadge = document.getElementById('inspector-status-badge');
+      const expSum = document.getElementById('inspector-expiry-summary');
+      if (p.expiry_status === 'Expired') {
+        expBadge.className = 'px-2 py-0.5 rounded-full bg-[#fee2e2] text-[#dc2626] font-badge-label text-badge-label uppercase';
+        expBadge.textContent = 'Expired';
+        expSum.className = 'mt-1 flex items-center gap-1.5 font-tabular-data text-caption-medium text-error';
+        expSum.innerHTML = '<span class="material-symbols-outlined text-[14px]">event_busy</span><span>Past expiration date</span>';
+      } else if (p.expiry_status === 'Expiring Soon') {
+        expBadge.className = 'px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#d97706] font-badge-label text-badge-label uppercase';
+        expBadge.textContent = `${p.days_until_expiry} Days Left`;
+        expSum.className = 'mt-1 flex items-center gap-1.5 font-tabular-data text-caption-medium text-[#d97706]';
+        expSum.innerHTML = `<span class="material-symbols-outlined text-[14px]">timer</span><span>Expires in ${p.days_until_expiry} days</span>`;
+      } else {
+        expBadge.className = 'px-2 py-0.5 rounded-full bg-[#dcfce7] text-[#16a34a] font-badge-label text-badge-label uppercase';
+        expBadge.textContent = p.expiry_status;
+        expSum.className = 'mt-1 flex items-center gap-1.5 font-tabular-data text-caption-medium text-secondary';
+        expSum.innerHTML = '<span class="material-symbols-outlined text-[14px]">check_circle</span><span>Shelf-life stable</span>';
+      }
+
+      applyCatalogFilters();
+    }
+
+    function editCurrentInspectedProduct() {
+      if (!currentInspectedProduct) return;
+      navigateTo('edit');
+      document.getElementById('edit-product-select').value = currentInspectedProduct.id;
+      onEditProductSelected(currentInspectedProduct.id);
+    }
+
+    function promptDeleteCurrentProduct() {
+      if (!currentInspectedProduct) return;
+      pendingDeleteId = currentInspectedProduct.id;
+      document.getElementById('delete-modal-product-name').textContent = currentInspectedProduct.name + ` (SKU #${currentInspectedProduct.id})`;
+      document.getElementById('delete-modal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('delete-modal').classList.add('hidden');
+      pendingDeleteId = null;
+    }
+
+    document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+      if (!pendingDeleteId) return;
+      if (isBackendActive) {
+        await fetchAPI('/api/products/' + pendingDeleteId, { method: 'DELETE' });
+      } else {
+        LocalStorageStore.deleteProduct(pendingDeleteId);
+      }
+      closeDeleteModal();
+      showToast('Product successfully removed from active catalog.');
+      currentInspectedProduct = null;
+      loadCatalog();
+    });
+
+
+    // ================= REGISTER PRODUCT CONTROLLER =================
+    function syncRegisterCategory(val) {
+      const custom = document.getElementById('reg-custom-category');
+      if (val === '__custom__') {
+        custom.classList.remove('hidden');
+      } else {
+        custom.classList.add('hidden');
+      }
+      syncRegisterPreview();
+    }
+
+    function toggleRegisterExpiry() {
+      const hasExpiry = document.getElementById('reg-has-expiry').checked;
+      const wrap = document.getElementById('reg-expiry-wrapper');
+      wrap.style.opacity = hasExpiry ? '1' : '0.4';
+      wrap.style.pointerEvents = hasExpiry ? 'auto' : 'none';
+      document.getElementById('preview-expiry-row').style.display = hasExpiry ? 'flex' : 'none';
+      syncRegisterPreview();
+    }
+
+    function syncRegisterPreview() {
+      const name = document.getElementById('reg-name').value || 'Untitled Product';
+      let cat = document.getElementById('reg-category').value;
+      if (cat === '__custom__') {
+        cat = document.getElementById('reg-custom-category').value || 'Custom';
+      }
+      const qty = parseInt(document.getElementById('reg-qty').value || 0);
+      const price = parseFloat(document.getElementById('reg-price').value || 0);
+      const minStock = parseInt(document.getElementById('reg-min-stock').value || 0);
+      const hasExpiry = document.getElementById('reg-has-expiry').checked;
+      const expiryDate = document.getElementById('reg-expiry-date').value;
+
+      document.getElementById('reg-calc-formula').textContent = `${qty} units × Rs ${price.toFixed(2)}`;
+      document.getElementById('reg-calc-valuation').textContent = formatCurrency(qty * price);
+
+      document.getElementById('preview-title').textContent = name;
+      document.getElementById('preview-category-badge').textContent = cat;
+      document.getElementById('preview-price-text').textContent = formatCurrency(price) + ' / unit';
+      document.getElementById('preview-units-text').textContent = qty + ' units';
+      document.getElementById('preview-val-text').textContent = formatCurrency(qty * price);
+      document.getElementById('preview-expiry-text').textContent = hasExpiry ? (expiryDate || 'N/A') : 'Non-Perishable';
+
+      const stockBadge = document.getElementById('preview-stock-badge');
+      if (qty === 0) {
+        stockBadge.className = 'px-2.5 py-1 rounded-full bg-[#fee2e2] text-[#dc2626] font-badge-label text-badge-label uppercase';
+        stockBadge.textContent = 'Out of Stock';
+      } else if (qty <= minStock) {
+        stockBadge.className = 'px-2.5 py-1 rounded-full bg-[#fef3c7] text-[#d97706] font-badge-label text-badge-label uppercase';
+        stockBadge.textContent = 'Low Stock';
+      } else {
+        stockBadge.className = 'px-2.5 py-1 rounded-full bg-[#dcfce7] text-[#16a34a] font-badge-label text-badge-label uppercase';
+        stockBadge.textContent = 'In Stock';
+      }
+    }
+
+    function resetRegisterForm() {
+      document.getElementById('reg-name').value = 'Arabica Roast Coffee Beans 500g';
+      document.getElementById('reg-category').value = 'Beverages';
+      document.getElementById('reg-custom-category').classList.add('hidden');
+      document.getElementById('reg-qty').value = '25';
+      document.getElementById('reg-price').value = '380.00';
+      document.getElementById('reg-has-expiry').checked = true;
+      toggleRegisterExpiry();
+      document.getElementById('reg-expiry-date').value = addDays(180);
+      document.getElementById('reg-min-stock').value = '8';
+      syncRegisterPreview();
+    }
+
+    async function submitNewProduct() {
+      const name = document.getElementById('reg-name').value.trim();
+      let category = document.getElementById('reg-category').value;
+      if (category === '__custom__') {
+        category = document.getElementById('reg-custom-category').value.trim();
+      }
+      const quantity = parseInt(document.getElementById('reg-qty').value || 0);
+      const unit_price = parseFloat(document.getElementById('reg-price').value || 0);
+      const hasExpiry = document.getElementById('reg-has-expiry').checked;
+      const expiry_date = hasExpiry ? document.getElementById('reg-expiry-date').value : null;
+      const min_stock = parseInt(document.getElementById('reg-min-stock').value || 5);
+
+      if (!name) {
+        alert('Please enter a product name.');
+        return;
+      }
+      if (!category) {
+        alert('Please specify a category.');
+        return;
+      }
+
+      const payload = { name, category, quantity, unit_price, expiry_date, min_stock };
+
+      if (isBackendActive) {
+        const res = await fetchAPI('/api/products', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        if (res) {
+          showToast(`Product "${name}" registered successfully!`);
+          resetRegisterForm();
+          navigateTo('catalog');
+          return;
+        }
+      }
+
+      // Local storage fallback
+      LocalStorageStore.addProduct(payload);
+      showToast(`Product "${name}" registered successfully! (Saved to Browser)`);
+      resetRegisterForm();
+      navigateTo('catalog');
+    }
+
+
+    // ================= EDIT PRODUCT CONTROLLER =================
+    async function populateEditProductDropdown() {
+      let products = await fetchAPI('/api/products');
+      if (!products) {
+        products = LocalStorageStore.getEnrichedProducts();
+      }
+      allProducts = products;
+      const select = document.getElementById('edit-product-select');
+      select.innerHTML = '';
+
+      allProducts.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = `#${p.id} - ${p.name} (${p.category})`;
+        select.appendChild(opt);
+      });
+
+      if (allProducts.length > 0) {
+        const targetId = currentInspectedProduct ? currentInspectedProduct.id : allProducts[0].id;
+        select.value = targetId;
+        onEditProductSelected(targetId);
+      }
+    }
+
+    function onEditProductSelected(id) {
+      const p = allProducts.find(x => x.id == id);
+      if (!p) return;
+
+      document.getElementById('edit-id-badge').textContent = `SKU #${p.id}`;
+      document.getElementById('edit-name').value = p.name;
+      document.getElementById('edit-category').value = p.category;
+      document.getElementById('edit-qty').value = p.quantity;
+      document.getElementById('edit-price').value = p.unit_price;
+      document.getElementById('edit-expiry-date').value = p.expiry_date || '';
+      document.getElementById('edit-min-stock').value = p.min_stock;
+    }
+
+    async function submitEditProduct() {
+      const id = document.getElementById('edit-product-select').value;
+      const name = document.getElementById('edit-name').value.trim();
+      const category = document.getElementById('edit-category').value.trim();
+      const quantity = parseInt(document.getElementById('edit-qty').value || 0);
+      const unit_price = parseFloat(document.getElementById('edit-price').value || 0);
+      const expiry_date = document.getElementById('edit-expiry-date').value || null;
+      const min_stock = parseInt(document.getElementById('edit-min-stock').value || 5);
+
+      if (!name || !category) {
+        alert('Name and category are required.');
+        return;
+      }
+
+      const payload = { name, category, quantity, unit_price, expiry_date, min_stock };
+
+      if (isBackendActive) {
+        const res = await fetchAPI('/api/products/' + id, {
+          method: 'PUT',
+          body: JSON.stringify(payload)
+        });
+        if (res) {
+          showToast(`Product #${id} updated successfully.`);
+          navigateTo('catalog');
+          return;
+        }
+      }
+
+      // Local storage fallback
+      LocalStorageStore.updateProduct(id, payload);
+      showToast(`Product #${id} updated successfully.`);
+      navigateTo('catalog');
+    }
+
+
+    // ================= ALERTS HUB CONTROLLER =================
+    async function loadAlerts() {
+      let data = await fetchAPI('/api/alerts');
+      if (!data) {
+        data = LocalStorageStore.getAlerts();
+      }
+
+      document.getElementById('alerts-expired-batches').textContent = `${data.expired.length} Batches`;
+      document.getElementById('alerts-expired-valuation').textContent = formatCurrency(data.expired_value);
+      document.getElementById('alerts-expiring-soon-batches').textContent = `${data.expiring_soon.length} Batches`;
+      document.getElementById('alerts-low-stock-count').textContent = `${data.low_stock.length + data.out_of_stock.length} SKUs`;
+
+      // Expired Table
+      const expBody = document.getElementById('alerts-expired-table-body');
+      expBody.innerHTML = '';
+      if (data.expired.length === 0) {
+        expBody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-on-surface-variant font-caption-regular">No expired items currently in stock.</td></tr>';
+      } else {
+        data.expired.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.className = 'h-12 hover:bg-surface-container-low transition-colors';
+          tr.innerHTML = `
+            <td class="px-space-md py-2 font-tabular-data text-primary font-semibold">#${p.id}</td>
+            <td class="px-space-md py-2 font-body-semibold text-on-surface">${p.name}</td>
+            <td class="px-space-md py-2"><span class="px-2 py-0.5 rounded bg-surface-container font-caption-regular">${p.category}</span></td>
+            <td class="px-space-md py-2 text-right font-tabular-data text-error font-semibold">${p.quantity} units</td>
+            <td class="px-space-md py-2 text-right font-tabular-data">${formatCurrency(p.unit_price)}</td>
+            <td class="px-space-md py-2 font-tabular-data text-error">${p.expiry_date}</td>
+            <td class="px-space-md py-2 text-center">
+              <button onclick="inspectProduct(${p.id}); navigateTo('catalog');" class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-caption-medium text-caption-medium transition-colors">
+                Inspect
+              </button>
+            </td>
+          `;
+          expBody.appendChild(tr);
+        });
+      }
+
+      // Low Stock Table
+      const lowBody = document.getElementById('alerts-lowstock-table-body');
+      lowBody.innerHTML = '';
+      const lowList = [...data.out_of_stock, ...data.low_stock];
+      if (lowList.length === 0) {
+        lowBody.innerHTML = '<tr><td colspan="7" class="px-6 py-4 text-center text-on-surface-variant font-caption-regular">All items are sufficiently stocked.</td></tr>';
+      } else {
+        lowList.forEach(p => {
+          const isOut = p.quantity === 0;
+          const statusPill = isOut 
+            ? '<span class="px-2 py-0.5 rounded-full bg-error-container text-error font-badge-label text-badge-label uppercase">Out of Stock</span>'
+            : '<span class="px-2 py-0.5 rounded-full bg-[#fef3c7] text-[#92400e] font-badge-label text-badge-label uppercase">Low Stock</span>';
+
+          const tr = document.createElement('tr');
+          tr.className = 'h-12 hover:bg-surface-container-low transition-colors';
+          tr.innerHTML = `
+            <td class="px-space-md py-2 font-tabular-data text-primary font-semibold">#${p.id}</td>
+            <td class="px-space-md py-2 font-body-semibold text-on-surface">${p.name}</td>
+            <td class="px-space-md py-2"><span class="px-2 py-0.5 rounded bg-surface-container font-caption-regular">${p.category}</span></td>
+            <td class="px-space-md py-2 text-right font-tabular-data font-semibold ${isOut ? 'text-error' : 'text-[#d97706]'}">${p.quantity} units</td>
+            <td class="px-space-md py-2 text-right font-tabular-data">${p.min_stock} units</td>
+            <td class="px-space-md py-2 text-center">${statusPill}</td>
+            <td class="px-space-md py-2 text-center">
+              <button onclick="inspectProduct(${p.id}); navigateTo('catalog');" class="px-2.5 py-1 rounded bg-surface-container hover:bg-surface-container-high text-on-surface font-caption-medium text-caption-medium transition-colors">
+                Inspect
+              </button>
+            </td>
+          `;
+          lowBody.appendChild(tr);
+        });
+      }
+    }
+
+
+    // ================= REPORTS CONTROLLER =================
+    async function loadReports() {
+      let stats = await fetchAPI('/api/stats');
+      let alerts = await fetchAPI('/api/alerts');
+
+      if (!stats || !alerts) {
+        stats = LocalStorageStore.getStats();
+        alerts = LocalStorageStore.getAlerts();
+      }
+
+      if (stats) {
+        document.getElementById('rep-sku-count').textContent = stats.total_products;
+        document.getElementById('rep-unit-count').textContent = stats.total_units.toLocaleString();
+        document.getElementById('rep-total-val').textContent = formatCurrency(stats.total_value);
+      }
+      if (alerts) {
+        document.getElementById('rep-expired-val').textContent = formatCurrency(alerts.expired_value);
+      }
+    }
+
+    function downloadCSV() {
+      if (isBackendActive) {
+        window.open(API_BASE + '/api/export/csv', '_blank');
+        return;
+      }
+      // Browser-generated CSV download
+      const products = LocalStorageStore.getEnrichedProducts();
+      const headers = ["id", "name", "category", "quantity", "unit_price", "expiry_date", "min_stock", "stock_status", "expiry_status", "days_until_expiry", "created_at", "updated_at"];
+      let csv = "\uFEFF" + headers.join(",") + "\r\n";
+      products.forEach(p => {
+        const row = headers.map(h => {
+          let val = p[h] !== null && p[h] !== undefined ? String(p[h]) : "";
+          if (val.includes(",") || val.includes('"') || val.includes('\n')) {
+            val = `"${val.replace(/"/g, '""')}"`;
+          }
+          return val;
+        });
+        csv += row.join(",") + "\r\n";
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `smartshelf_inventory_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast("CSV inventory report downloaded successfully.");
+    }
+
+    function downloadSummary() {
+      if (isBackendActive) {
+        window.open(API_BASE + '/api/export/summary', '_blank');
+        return;
+      }
+      // Browser-generated summary text download
+      const stats = LocalStorageStore.getStats();
+      const today = new Date().toISOString().split('T')[0];
+      const summary = [
+        `SmartShelf Inventory Summary  |  Generated: ${today}`,
+        "=".repeat(55),
+        `Total products     : ${stats.total_products}`,
+        `Total units        : ${stats.total_units.toLocaleString()}`,
+        `Total stock value  : Rs ${stats.total_value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+        `Expired items      : ${stats.expired_count}`,
+        `Expiring soon      : ${stats.expiring_soon_count}`,
+        `Low / out of stock : ${stats.low_stock_count}`,
+      ].join("\r\n");
+
+      const blob = new Blob([summary], { type: "text/plain;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "smartshelf_summary.txt";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showToast("Executive summary report downloaded.");
+    }
+
+
+    // ================= AUDIT LOG CONTROLLER =================
+    async function loadAuditLog() {
+      let logs = await fetchAPI('/api/audit-log');
+      if (!logs) {
+        logs = LocalStorageStore.getAuditLogs();
+      }
+      auditLogs = logs;
+      const tbody = document.getElementById('audit-table-body');
+      tbody.innerHTML = '';
+
+      if (auditLogs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-on-surface-variant font-caption-regular">No audit log records found.</td></tr>';
+        return;
+      }
+
+      auditLogs.forEach(entry => {
+        let actionBadge = '<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface font-badge-label text-badge-label uppercase">LOG</span>';
+        if (entry.action === 'ADD') {
+          actionBadge = '<span class="px-2.5 py-0.5 rounded-full bg-[#dcfce7] text-[#16a34a] font-badge-label text-badge-label uppercase font-body-semibold">ADD</span>';
+        } else if (entry.action === 'EDIT') {
+          actionBadge = '<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary-container font-badge-label text-badge-label uppercase font-body-semibold">EDIT</span>';
+        } else if (entry.action === 'DELETE') {
+          actionBadge = '<span class="px-2.5 py-0.5 rounded-full bg-error-container text-error font-badge-label text-badge-label uppercase font-body-semibold">DELETE</span>';
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = 'h-12 hover:bg-surface-container-low transition-colors';
+        tr.innerHTML = `
+          <td class="px-space-md py-2 font-tabular-data text-outline font-caption-regular">#${entry.id}</td>
+          <td class="px-space-md py-2 font-tabular-data text-caption-regular text-on-surface-variant">${entry.timestamp}</td>
+          <td class="px-space-md py-2">${actionBadge}</td>
+          <td class="px-space-md py-2 font-tabular-data text-primary font-semibold">${entry.product_id ? ('#' + entry.product_id) : '—'}</td>
+          <td class="px-space-lg py-2 font-body-regular text-body-medium text-on-surface">${entry.details}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function downloadAuditJSON() {
+      const logs = auditLogs.length > 0 ? auditLogs : LocalStorageStore.getAuditLogs();
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(logs, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `smartshelf_audit_log_${new Date().toISOString().split('T')[0]}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Audit ledger exported as JSON.");
+    }
+
+    // Initialize application on load
+    window.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('current-date-display').textContent = new Date().toISOString().split('T')[0];
+      await checkBackendConnectivity();
+      const initialHash = window.location.hash.replace('#', '') || 'dashboard';
+      navigateTo(initialHash);
+      syncRegisterPreview();
+    });
+  </script>
+</body>
+</html>
